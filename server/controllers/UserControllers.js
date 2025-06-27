@@ -1,71 +1,154 @@
 const bcrypt = require('bcrypt');
 const UserModel = require('../models/UserModel');
+const fs = require('fs');
+const path = require('path');
+const prisma = require('../prisma/client');
 
 const UserController = {
     register: async (req, res) => {
         const {
-          first_name,
-          last_name,
-          email,
-          password,
-          phone_number,
-          location
-        } = req.body;
-    
-        if (!first_name || !last_name || !email || !password) {
-          return res.status(400).json({ error: 'Missing required fields' });
-        }
-    
-        UserModel.findByEmail(email, async (err, results) => {
-          if (err) return res.status(500).json({ error: 'Database error' });
-          if (results.length > 0) return res.status(409).json({ error: 'Email already exists' });
-    
-          const hashedPassword = await bcrypt.hash(password, 10);
-    
-          const userData = {
             first_name,
             last_name,
             email,
+            password,
             phone_number,
-            location,
-            profile_picture: 'default.png',  // 👈 force use of default
-            password_hash: hashedPassword
-          };
-    
-          UserModel.create(userData, (err, result) => {
-            if (err) return res.status(500).json({ error: 'Insert failed' });
-    
+            location
+          } = req.body;
+        
+          if (!first_name || !last_name || !email || !password) {
+            return res.status(400).json({ error: 'Missing required fields' });
+          }
+        
+          try {
+            // Check for existing email
+            const existingUser = await prisma.user.findUnique({ where: { email } });
+            if (existingUser) {
+              return res.status(409).json({ error: 'Email already exists' });
+            }
+        
+            // Hash password
+            const hashedPassword = await bcrypt.hash(password, 10);
+        
+            // Create user
+            const newUser = await prisma.user.create({
+              data: {
+                first_name,
+                last_name,
+                email,
+                password_hash: hashedPassword,
+                phone_number,
+                location,
+                profile_picture: 'default.png'
+              }
+            });
+        
             res.status(201).json({
               message: 'User registered successfully',
-              userId: result.insertId,
+              userId: newUser.id,
               profile_picture_url: `http://localhost:5000/uploads/default.png`
             });
-          });
-        });
-      },
+        
+          } catch (error) {
+            console.error('Register error:', error);
+            res.status(500).json({ error: 'Server error during registration' });
+          }
+        },
 
-  login: (req, res) => {
+  login: async (req, res) => {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'Missing credentials' });
+    if (!email || !password)
+        return res.status(400).json({ error: 'Missing credentials' });
 
-    UserModel.findByEmail(email, async (err, results) => {
-      if (err) return res.status(500).json({ error: 'Database error' });
-      if (results.length === 0) return res.status(401).json({ error: 'Invalid credentials' });
+    try {
+        const user = await prisma.user.findUnique({
+        where: { email }
+        });
 
-      const user = results[0];
-      const match = await bcrypt.compare(password, user.password_hash);
-      if (!match) return res.status(401).json({ error: 'Invalid credentials' });
+        if (!user)
+        return res.status(401).json({ error: 'Invalid credentials' });
 
-      res.json({
+        const match = await bcrypt.compare(password, user.password_hash);
+        if (!match)
+        return res.status(401).json({ error: 'Invalid credentials' });
+
+        res.json({
         message: 'Login successful',
         user: {
-          id: user.id,
-          name: `${user.first_name} ${user.last_name}`,
-          email: user.email,
+            id: user.id,
+            name: `${user.first_name} ${user.last_name}`,
+            email: user.email
         }
-      });
-    });
-  }
+        });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Server error during login' });
+    }
+  },
+
+  updateUser: async (req, res) => {
+    const userId = parseInt(req.params.id);
+    if (isNaN(userId)) return res.status(400).json({ error: 'Invalid user ID' });
+
+    const {
+        first_name,
+        last_name,
+        email,
+        phone_number,
+        location,
+    } = req.body;
+
+    const profile_picture = req.file ? req.file.filename : undefined;
+
+    try {
+        // Fetch existing user for image cleanup
+        const existingUser = await prisma.user.findUnique({
+        where: { id: userId }
+        });
+
+        if (!existingUser) {
+        return res.status(404).json({ error: 'User not found' });
+        }
+
+        // If a new image is uploaded, remove old one (unless default)
+        if (profile_picture && existingUser.profile_picture !== 'default.png') {
+        const oldPath = path.join(__dirname, '..', 'uploads', existingUser.profile_picture);
+        fs.unlink(oldPath, (err) => {
+            if (err && err.code !== 'ENOENT') {
+            console.warn('Failed to delete old image:', err.message);
+            } else {
+            console.log('Old profile image deleted:', existingUser.profile_picture);
+            }
+        });
+        }
+
+        // Build update data: only fields that are defined
+        const updateData = {
+        ...(first_name !== undefined && { first_name }),
+        ...(last_name !== undefined && { last_name }),
+        ...(email !== undefined && { email }),
+        ...(phone_number !== undefined && { phone_number }),
+        ...(location !== undefined && { location }),
+        ...(profile_picture !== undefined && { profile_picture }),
+        };
+
+        const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: updateData
+        });
+
+        res.json({
+        message: 'User updated successfully',
+        updated_fields: updateData
+        });
+
+    } catch (error) {
+        console.error('Update error:', error);
+        res.status(500).json({ error: 'Failed to update user' });
+    }
+    }
+
+
 };
 
 module.exports = UserController;

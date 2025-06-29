@@ -11,12 +11,14 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Dashboard'
 import Dashboard from './pages/Dashboard';
+import ScrollToTop from './components/ScrolltoTop';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <Router>
+      <ScrollToTop/>
       <Navbar isLoggedIn={isLoggedIn} />
       <main>
         <Routes>

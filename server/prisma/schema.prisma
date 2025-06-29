@@ -39,3 +39,35 @@ model Session {
   expires     DateTime
   user         User     @relation(fields: [userId], references: [id])
 }
+
+model Destination {
+  id             Int       @id @default(autoincrement())
+  name           String
+  country        String
+  description    String
+  main_image_url String
+
+  retreats       Retreat[]
+}
+
+model Retreat {
+  id              Int          @id @default(autoincrement())
+  destination_id  Int
+  name            String
+  description     String
+  duration_days   Int
+  category        String
+  price_usd       Decimal      @db.Decimal(10, 2)
+  cover_image_url String
+
+  images          RetreatImage[]   // ← relation to images
+  destination     Destination  @relation(fields: [destination_id], references: [id])
+}
+
+model RetreatImage {
+  id          Int      @id @default(autoincrement())
+  image_url   String
+  retreat     Retreat  @relation(fields: [retreat_id], references: [id])
+  retreat_id  Int
+  created_at  DateTime @default(now())
+}

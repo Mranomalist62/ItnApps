@@ -1,18 +1,27 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
-// Set storage options
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Make sure this folder exists
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const uniqueName = `profile_${Date.now()}${ext}`;
-    cb(null, uniqueName);
+function getUploadMiddleware(folderName) {
+  const baseDir = path.join(__dirname, '..', 'uploads', folderName);
+
+  // Ensure the folder exists
+  if (!fs.existsSync(baseDir)) {
+    fs.mkdirSync(baseDir, { recursive: true });
   }
-});
 
-// Export the upload middleware
-const upload = multer({ storage });
-module.exports = upload;
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, baseDir);
+    },
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const uniqueName = `${folderName.slice(0, -1)}_${Date.now()}${ext}`;
+      cb(null, uniqueName);
+    }
+  });
+
+  return multer({ storage });
+}
+
+module.exports = getUploadMiddleware;

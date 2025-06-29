@@ -29,4 +29,13 @@ model User {
   is_active       Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
+  sessions        Session[]
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  userId      Int
+  sessionToken String  @unique
+  expires     DateTime
+  user         User     @relation(fields: [userId], references: [id])
 }

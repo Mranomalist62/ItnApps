@@ -3,6 +3,7 @@ const UserModel = require('../models/UserModel');
 const fs = require('fs');
 const path = require('path');
 const prisma = require('../prisma/client');
+const { v4: uuidv4 } = require('uuid'); 
 
 const UserController = {
     register: async (req, res) => {
@@ -55,38 +56,58 @@ const UserController = {
         },
 
   login: async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password)
+      const { email, password } = req.body;
+      if (!email || !password)
         return res.status(400).json({ error: 'Missing credentials' });
-
-    try {
+    
+      try {
         const user = await prisma.user.findUnique({
-        where: { email }
+          where: { email }
         });
-
+    
         if (!user)
-        return res.status(401).json({ error: 'Invalid credentials' });
-
+          return res.status(401).json({ error: 'Invalid credentials' });
+    
         const match = await bcrypt.compare(password, user.password_hash);
         if (!match)
-        return res.status(401).json({ error: 'Invalid credentials' });
-
+          return res.status(401).json({ error: 'Invalid credentials' });
+    
+        const sessionToken = uuidv4();
+        const expires = new Date(Date.now() + 1000 * 60 * 60 * 24); // 1 day
+    
+        await prisma.session.create({
+          data: {
+            userId: user.id,
+            sessionToken,
+            expires
+          }
+        });
+    
+        // ✅ Set cookie
+        res.cookie('sessionToken', sessionToken, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60 * 24, // 1 day
+          secure: process.env.NODE_ENV === 'production', // only on HTTPS in prod
+          sameSite: 'lax'
+        });
+    
+        // ✅ Return safe user data
         res.json({
-        message: 'Login successful',
-        user: {
+          message: 'Login successful',
+          user: {
             id: user.id,
             name: `${user.first_name} ${user.last_name}`,
             email: user.email
-        }
+          }
         });
-
-    } catch (error) {
+    
+      } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Server error during login' });
-    }
-  },
+      }
+    },
 
-  updateUser: async (req, res) => {
+  update: async (req, res) => {
     const userId = parseInt(req.params.id);
     if (isNaN(userId)) return res.status(400).json({ error: 'Invalid user ID' });
 

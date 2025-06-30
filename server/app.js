@@ -8,7 +8,13 @@ const app = express();
 const PORT = 5000;
 
 //External Package
-app.use(cors());             // allow cross-origin from frontend
+// app.use(cors());             // allow cross-origin from frontend
+app.use(
+  cors({
+    origin: "http://localhost:5173", // your React app's origin
+    credentials: true,
+  })
+);
 app.use(express.json());     // parse JSON bodies
 app.use(cookieParser());
 app.use(session({

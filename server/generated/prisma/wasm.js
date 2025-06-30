@@ -137,13 +137,6 @@ exports.Prisma.UserScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
-exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  sessionToken: 'sessionToken',
-  expires: 'expires'
-};
-
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -164,15 +157,9 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   password_hash: 'password_hash'
 };
 
-exports.Prisma.SessionOrderByRelevanceFieldEnum = {
-  id: 'id',
-  sessionToken: 'sessionToken'
-};
-
 
 exports.Prisma.ModelName = {
-  User: 'User',
-  Session: 'Session'
+  User: 'User'
 };
 
 /**

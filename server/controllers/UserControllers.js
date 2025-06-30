@@ -1,117 +1,26 @@
-const bcrypt = require('bcrypt');
-const UserModel = require('../models/UserModel');
+// const { v4: uuidv4 } = require('uuid'); 
 const fs = require('fs');
 const path = require('path');
-const prisma = require('../prisma/client');
-const { v4: uuidv4 } = require('uuid'); 
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 const UserController = {
-    register: async (req, res) => {
-        const {
-            first_name,
-            last_name,
-            email,
-            password,
-            phone_number,
-            location
-          } = req.body;
-        
-          if (!first_name || !last_name || !email || !password) {
-            return res.status(400).json({ error: 'Missing required fields' });
-          }
-        
-          try {
-            // Check for existing email
-            const existingUser = await prisma.user.findUnique({ where: { email } });
-            if (existingUser) {
-              return res.status(409).json({ error: 'Email already exists' });
-            }
-        
-            // Hash password
-            const hashedPassword = await bcrypt.hash(password, 10);
-        
-            // Create user
-            const newUser = await prisma.user.create({
-              data: {
-                first_name,
-                last_name,
-                email,
-                password_hash: hashedPassword,
-                phone_number,
-                location,
-                profile_picture: 'default.png'
-              }
-            });
-        
-            res.status(201).json({
-              message: 'User registered successfully',
-              userId: newUser.id,
-              profile_picture_url: `http://localhost:5000/uploads/default.png`
-            });
-        
-          } catch (error) {
-            console.error('Register error:', error);
-            res.status(500).json({ error: 'Server error during registration' });
-          }
-        },
+  show : async (req, res) => {
+    const { id } = req.params;
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: parseInt(id) },
+      });
 
-      login: async (req, res) => {
-        const { email, password } = req.body;
-          if (!email || !password)
-            return res.status(400).json({ error: 'Missing credentials' });
-        
-          try {
-            const user = await prisma.user.findUnique({ where: { email } });
-        
-            if (!user)
-              return res.status(401).json({ error: 'Invalid credentials' });
-        
-            const match = await bcrypt.compare(password, user.password_hash);
-            if (!match)
-              return res.status(401).json({ error: 'Invalid credentials' });
-        
-            // Optional: Invalidate existing sessions
-            await prisma.session.deleteMany({ where: { userId: user.id } });
-        
-            // Session setup
-            const sessionToken = uuidv4();
-            const expires = new Date(Date.now() + 1000 * 60 * 60 * 24); // 1 day
-        
-            await prisma.session.create({
-              data: {
-                userId: user.id,
-                sessionToken,
-                expires
-              }
-            });
-        
-            await prisma.user.update({
-              where: { id: user.id },
-              data: { last_login: new Date() }
-            });
-        
-            res.cookie('sessionToken', sessionToken, {
-              httpOnly: true,
-              maxAge: 1000 * 60 * 60 * 24,
-              secure: process.env.NODE_ENV === 'production',
-              sameSite: 'lax'
-            });
-        
-            res.json({
-              message: 'Login successful',
-              user: {
-                id: user.id,
-                name: `${user.first_name} ${user.last_name}`,
-                email: user.email,
-                profile_picture: user.profile_picture
-              }
-            });
-        
-          } catch (error) {
-            console.error('Login error:', error);
-            res.status(500).json({ error: 'Server error during login' });
-          }
-        },
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error', detail: err.message });
+    }
+  },
 
   update: async (req, res) => {
     const userId = parseInt(req.params.id);
@@ -174,8 +83,6 @@ const UserController = {
         res.status(500).json({ error: 'Failed to update user' });
     }
   }
-
-
 };
 
 module.exports = UserController;

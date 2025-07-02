@@ -164,7 +164,7 @@ import { Link } from 'react-router-dom';
                 Join our next retreat and begin your journey to wellness today.
             </p>
             <button className="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-3 px-8 rounded-full transition duration-300">
-                Book Now
+                Schedule Now
             </button>
             </div>
         </section>

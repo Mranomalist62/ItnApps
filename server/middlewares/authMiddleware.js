@@ -17,13 +17,29 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ error: 'Invalid or expired session' });
     }
 
-    req.userId = session.user.id; // attach the user ID for downstream use
-    next();
+    // Attach user to request
+    req.user = {
+      id: session.user.id,
+      email: session.user.email,
+      role: session.user.role
+    };
 
+    next();
   } catch (err) {
     console.error('Auth error:', err);
     return res.status(500).json({ error: 'Authentication failed' });
   }
 };
+
+// Attach admin wrapper to the same export
+authMiddleware.withAdmin = [
+  authMiddleware,
+  (req, res, next) => {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    next();
+  }
+];
 
 module.exports = authMiddleware;

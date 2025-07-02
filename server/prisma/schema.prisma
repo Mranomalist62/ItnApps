@@ -31,6 +31,8 @@ model User {
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
   sessions        Session[]
+  itineraries     Itinerary[]
+  role            String    @default("user") 
 }
 
 model Session {
@@ -56,13 +58,14 @@ model Retreat {
   destination_id  Int
   name            String
   description     String
-  duration_days   Int
   category        String
   price_usd       Decimal      @db.Decimal(10, 2)
   cover_image_url String
 
   images          RetreatImage[]   // ← relation to images
   destination     Destination  @relation(fields: [destination_id], references: [id])
+  dayRetreats     DayRetreat[]
+  categories      Category[]   @relation("RetreatCategories")
 }
 
 model RetreatImage {
@@ -71,4 +74,39 @@ model RetreatImage {
   retreat     Retreat  @relation(fields: [retreat_id], references: [id])
   retreat_id  Int
   created_at  DateTime @default(now())
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  retreats  Retreat[]  @relation("RetreatCategories")
+}
+
+model Itinerary {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  title     String
+  startDate DateTime
+  endDate   DateTime
+  days      ItineraryDay[]
+  createdAt DateTime  @default(now())
+}
+
+model ItineraryDay {
+  id           Int         @id @default(autoincrement())
+  itinerary    Itinerary   @relation(fields: [itineraryId], references: [id])
+  itineraryId  Int
+  date         DateTime
+  notes        String?     // optional user notes
+  retreats     DayRetreat[]
+}
+
+model DayRetreat {
+  id             Int           @id @default(autoincrement())
+  retreat        Retreat       @relation(fields: [retreatId], references: [id])
+  retreatId      Int
+  itineraryDay   ItineraryDay  @relation(fields: [itineraryDayId], references: [id])
+  itineraryDayId Int
+  timeOfDay      String?       // optional: "morning", "afternoon", etc.
 }

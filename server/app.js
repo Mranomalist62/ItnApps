@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/users');
 const retreatRoutes = require('./routes/retreats')
+const destinationRoutes = require('./routes/retreats')
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
@@ -30,7 +31,7 @@ app.use(session({
 //internal package
 app.use('/api/users', userRoutes);
 app.use('/api/retreats', retreatRoutes);
-
+app.use('/api/destinations', destinationRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server listening on http://localhost:${PORT}`);

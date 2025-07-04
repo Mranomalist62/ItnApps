@@ -141,7 +141,7 @@ const SavedMenu = () => {
           <div className="border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-shadow">
             <div className="relative h-48">
               <img
-                alt="Mountain Serenity Escape"
+                alt="Jungle Zen Hideaway"
                 loading="lazy"
                 decoding="async"
                 data-nimg="fill"
@@ -180,14 +180,14 @@ const SavedMenu = () => {
                   <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                   <circle cx="12" cy="10" r="3"></circle>
                 </svg>
-                <span className="text-sm">Yogyakarta</span>
+                <span className="text-sm">Ubud, Bali</span>
               </div>
-              <h3 className="font-bold text-lg mb-2">Mountain Serenity Escape</h3>
+              <h3 className="font-bold text-lg mb-2">Jungle Zen Hideaway</h3>
               <div className="flex justify-between items-center mb-3">
-                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Adventure &amp; Wellness</span>
+                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Yoga  &amp; Meditation</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-lg font-bold">$950</span>
+                <span className="text-lg font-bold">$1200</span>
                 <a className="btn-outline text-sm py-1.5 px-4" href="/retreat/3">
                   View Details
                 </a>
@@ -253,7 +253,7 @@ const SavedMenu = () => {
           <div className="border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-shadow">
             <div className="relative h-48">
               <img
-                alt="Mountain Serenity Escape"
+                alt="Volcano Yoga Trail"
                 loading="lazy"
                 decoding="async"
                 data-nimg="fill"
@@ -294,12 +294,12 @@ const SavedMenu = () => {
                 </svg>
                 <span className="text-sm">Yogyakarta</span>
               </div>
-              <h3 className="font-bold text-lg mb-2">Mountain Serenity Escape</h3>
+              <h3 className="font-bold text-lg mb-2">Volcano Yoga Trail</h3>
               <div className="flex justify-between items-center mb-3">
-                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Adventure &amp; Wellness</span>
+                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Hiking &amp; Yoga</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-lg font-bold">$950</span>
+                <span className="text-lg font-bold">$980</span>
                 <a className="btn-outline text-sm py-1.5 px-4" href="/retreat/3">
                   View Details
                 </a>
@@ -333,6 +333,7 @@ const SettingMenu = ({ userData }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
+    // eslint-disable-next-line no-unused-vars
     const success = await handleUpdateProfile(e, form);
   };
   return (
@@ -372,7 +373,7 @@ const SettingMenu = ({ userData }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label for="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                    First Name {form.first_name}
+                    First Name
                   </label>
                   <input
                     id="firstName"

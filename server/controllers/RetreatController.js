@@ -91,19 +91,33 @@ const RetreatController = {
         }
       },
 
-      createRetreat : async (req, res) => {
+      createRetreat: async (req, res) => {
         try {
           const {
             name,
             description,
-            category, // fallback if categories[] is not used
             price_usd,
             destination_id,
-            categories, // optional array of category IDs
+            category 
           } = req.body;
       
-          if (!name || !description || !price_usd || !destination_id) {
+          if (!name || !description || !price_usd || !destination_id || !category) {
             return res.status(400).json({ error: 'Missing required fields' });
+          }
+      
+          // Check if category already exists
+          let categoryRecord = await prisma.category.findUnique({
+            where: { name: category }
+          });
+      
+          // If not, create it with a default description
+          if (!categoryRecord) {
+            categoryRecord = await prisma.category.create({
+              data: {
+                name: category,
+                desc: "No description yet"
+              }
+            });
           }
       
           // Process uploaded images (optional)
@@ -115,34 +129,30 @@ const RetreatController = {
             data: {
               name,
               description,
-              category: category || 'Uncategorized',
               price_usd: parseFloat(price_usd),
-              destination: { connect: { id: parseInt(destination_id) } },
               cover_image_url: coverImage,
-              categories: categories
-                ? {
-                    connect: categories.map((id) => ({ id: parseInt(id) })),
-                  }
-                : undefined,
-            },
+              destination: { connect: { id: parseInt(destination_id) } },
+              category: { connect: { id: categoryRecord.id } }
+            }
           });
       
           // Insert retreat images if available
           if (uploadedImages.length > 0) {
             const imageData = uploadedImages.map((file) => ({
               image_url: file.filename,
-              retreat_id: newRetreat.id,
+              retreat_id: newRetreat.id
             }));
       
             await prisma.retreatImage.createMany({
-              data: imageData,
+              data: imageData
             });
           }
       
           res.status(201).json({
             message: 'Retreat created successfully',
-            retreat: newRetreat,
+            retreat: newRetreat
           });
+      
         } catch (error) {
           console.error('Create Retreat Error:', error);
           res.status(500).json({ error: 'Failed to create retreat' });
@@ -171,49 +181,75 @@ const RetreatController = {
       
           if (!existing) return res.status(404).json({ error: 'Retreat not found' });
       
-          // If new images are uploaded, delete old ones
+          // Handle new images
           if (newImages.length > 0) {
-            // Remove DB entries
-            await prisma.retreatImage.deleteMany({
-              where: { retreat_id: retreatId }
-            });
+            await prisma.retreatImage.deleteMany({ where: { retreat_id: retreatId } });
       
-            // Remove old files (except default)
             existing.images.forEach(img => {
               if (img.image_url !== 'default.jpg') {
                 const imgPath = path.join(__dirname, '..', 'uploads', 'retreats', img.image_url);
                 fs.unlink(imgPath, err => {
                   if (err && err.code !== 'ENOENT') {
-                    console.warn('Failed to delete old image:', img.image_url);
+                    console.warn('Failed to delete image:', img.image_url);
                   }
                 });
               }
             });
       
-            // Insert new images
             const imageData = newImages.map(file => ({
               retreat_id: retreatId,
               image_url: file.filename
             }));
-      
             await prisma.retreatImage.createMany({ data: imageData });
           }
       
-          // Update retreat fields
-          const updated = await prisma.retreat.update({
-            where: { id: retreatId },
-            data: {
-              ...(name && { name }),
-              ...(description && { description }),
-              ...(category && { category }),
-              ...(price_usd && { price_usd: parseFloat(price_usd) }),
-              ...(destination_id && { destination_id: parseInt(destination_id) })
+          // Prepare update data
+          const updateData = {
+            ...(name && { name }),
+            ...(description && { description }),
+            ...(price_usd && { price_usd: parseFloat(price_usd) }),
+            ...(destination_id && { destination_id: parseInt(destination_id) })
+          };
+      
+          // Handle category update if provided
+          if (category) {
+            let categoryRecord = await prisma.category.findUnique({ where: { name: category } });
+            if (!categoryRecord) {
+              categoryRecord = await prisma.category.create({
+                data: {
+                  name: category,
+                  desc: 'No description yet'
+                }
+              });
             }
+      
+            // Replace categories connection (many-to-many)
+            await prisma.retreat.update({
+              where: { id: retreatId },
+              data: {
+                ...updateData,
+                categories: {
+                  set: [{ id: categoryRecord.id }]
+                }
+              }
+            });
+      
+          } else {
+            // No category change, just update retreat
+            await prisma.retreat.update({
+              where: { id: retreatId },
+              data: updateData
+            });
+          }
+      
+          const refreshed = await prisma.retreat.findUnique({
+            where: { id: retreatId },
+            include: { categories: true, images: true }
           });
       
           res.json({
             message: 'Retreat updated successfully',
-            retreat: updated
+            retreat: refreshed
           });
       
         } catch (error) {
@@ -224,42 +260,56 @@ const RetreatController = {
 
     
     deleteRetreat: async (req, res) => {
-        const retreatId = parseInt(req.params.id);
-        if (isNaN(retreatId)) return res.status(400).json({ error: 'Invalid retreat ID' });
-
-        try {
-            const retreat = await prisma.retreat.findUnique({
-            where: { id: retreatId },
-            include: {
-                images: true
+      const retreatId = parseInt(req.params.id);
+      if (isNaN(retreatId)) return res.status(400).json({ error: 'Invalid retreat ID' });
+    
+      try {
+        const retreat = await prisma.retreat.findUnique({
+          where: { id: retreatId },
+          include: {
+            images: true,
+            categories: true,
+            activities: true
+          }
+        });
+    
+        if (!retreat) return res.status(404).json({ error: 'Retreat not found' });
+    
+        // 1. Delete images from disk
+        retreat.images.forEach(img => {
+          if (img.image_url !== 'default.jpg') {
+            const imgPath = path.join(__dirname, '..', 'uploads', 'retreats', img.image_url);
+            fs.unlink(imgPath, err => {
+              if (err && err.code !== 'ENOENT') {
+                console.warn(`Failed to delete image ${img.image_url}:`, err.message);
+              }
+            });
+          }
+        });
+    
+        // 2. Disconnect categories 
+        await prisma.retreat.update({
+          where: { id: retreatId },
+          data: {
+            categories: {
+              set: []
             }
-            });
-
-            if (!retreat) return res.status(404).json({ error: 'Retreat not found' });
-
-            // Delete image files from disk (except default)
-            retreat.images.forEach(img => {
-            if (img.image_url !== 'default.jpg') {
-                const imgPath = path.join(__dirname, '..', 'uploads', 'retreats', img.image_url);
-                fs.unlink(imgPath, err => {
-                if (err && err.code !== 'ENOENT') {
-                    console.warn(`Failed to delete image ${img.image_url}:`, err.message);
-                }
-                });
-            }
-            });
-
-            // Delete retreat (images are CASCADED if Prisma schema uses `onDelete: Cascade`)
-            await prisma.retreat.delete({
-            where: { id: retreatId }
-            });
-
-            res.json({ message: 'Retreat deleted successfully' });
-
-        } catch (error) {
-            console.error('Delete retreat error:', error);
-            res.status(500).json({ error: 'Failed to delete retreat' });
-        }
+          }
+        });
+    
+        // 3. Delete related records
+        await prisma.retreatImage.deleteMany({ where: { retreat_id: retreatId } });
+        await prisma.activity.deleteMany({ where: { retreat_id: retreatId } });
+    
+        // 4. Delete the retreat itself
+        await prisma.retreat.delete({ where: { id: retreatId } });
+    
+        res.json({ message: 'Retreat deleted successfully' });
+    
+      } catch (error) {
+        console.error('Delete retreat error:', error);
+        res.status(500).json({ error: 'Failed to delete retreat' });
+      }
     }
 }
 

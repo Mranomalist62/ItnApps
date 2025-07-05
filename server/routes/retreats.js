@@ -1,23 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const RetreatController = require("../controllers/RetreatController")
-const authMiddleware = require("../middlewares/authMiddleware")
-const uploadRetreatImage = getUploadMiddleware('retreats');
+const RetreatController = require('../controllers/RetreatController');
 const authMiddleware = require('../middlewares/authMiddleware');
+const getUploadMiddleware = require('../middlewares/uploadMiddleware');
 
-//get
-router.get('/random', RetreatController.getRandomRetreats);   // For homepage
-router.get('/all', authMiddleware, RetreatController.getAllRetreats); // Admin
-router.get('/search', RetreatController.searchRetreats); // With query params
+const uploadRetreatImage = getUploadMiddleware('retreats');
 
-//post
+// GET
+router.get('/random', RetreatController.getRandomRetreats); // For homepage
+router.get('/search', RetreatController.searchRetreats);    // With query params
+router.get('/all', authMiddleware.withAdmin, RetreatController.getAllRetreats); // Admin
 
+// POST
+router.post(
+  '/create',
+  authMiddleware.withAdmin,
+  uploadRetreatImage.array('images', 3),
+  RetreatController.createRetreat
+);
 
-router.post('/create', authMiddleware.withAdmin, uploadRetreatImage.array('images', 3), RetreatController.createRetreat);
+// PUT
+router.put(
+  '/:id',
+  authMiddleware.withAdmin,
+  uploadRetreatImage.array('images', 3),
+  RetreatController.updateRetreat
+);
 
-//put
-router.put('/:id', authMiddleware, uploadRetreatImage.array('images', 3), RetreatController.updateRetreat);
+// DELETE
+router.delete(
+  '/:id',
+  authMiddleware.withAdmin,
+  RetreatController.deleteRetreat
+);
 
-//delete
-router.delete('/:id', authMiddleware, RetreatController.deleteRetreat);
-
+module.exports = router;

@@ -100,9 +100,9 @@ const SavedMenu = () => {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="lucide lucide-heart">
                   <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
                 </svg>
@@ -117,9 +117,9 @@ const SavedMenu = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="lucide lucide-map-pin mr-1">
                   <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                   <circle cx="12" cy="10" r="3"></circle>
@@ -156,9 +156,9 @@ const SavedMenu = () => {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="lucide lucide-heart">
                   <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
                 </svg>
@@ -173,9 +173,9 @@ const SavedMenu = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="lucide lucide-map-pin mr-1">
                   <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                   <circle cx="12" cy="10" r="3"></circle>
@@ -212,9 +212,9 @@ const SavedMenu = () => {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="lucide lucide-heart">
                   <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
                 </svg>
@@ -229,9 +229,9 @@ const SavedMenu = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="lucide lucide-map-pin mr-1">
                   <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                   <circle cx="12" cy="10" r="3"></circle>
@@ -268,9 +268,9 @@ const SavedMenu = () => {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="lucide lucide-heart">
                   <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
                 </svg>
@@ -285,9 +285,9 @@ const SavedMenu = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                   className="lucide lucide-map-pin mr-1">
                   <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                   <circle cx="12" cy="10" r="3"></circle>
@@ -334,7 +334,7 @@ const SettingMenu = ({ userData }) => {
   };
   const handleSubmit = async (e) => {
     // eslint-disable-next-line no-unused-vars
-    const success = await handleUpdateProfile(e, form);
+    const response = await handleUpdateProfile(e, form);
   };
   return (
     <div className="md:col-span-3">
@@ -355,9 +355,9 @@ const SettingMenu = ({ userData }) => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="lucide lucide-camera">
                     <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
                     <circle cx="12" cy="13" r="3"></circle>
@@ -402,11 +402,12 @@ const SettingMenu = ({ userData }) => {
                 </label>
                 <input
                   id="email"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-200"
                   type="email"
                   name="email"
                   onChange={handleChange}
-                  value={form.email}></input>
+                  value={form.email}
+                  disabled></input>
               </div>
               <div>
                 <label for="phone" className="block text-sm font-medium text-gray-700 mb-1">
@@ -458,21 +459,6 @@ const DashboardMenu = () => {
           <button className="flex-1 border border-gray-200 text-gray-700 py-2 rounded-lg text-sm hover:bg-gray-50">Add to Calendar</button>
         </div>
       </section>
-
-      <section className="bg-white p-5 rounded-xl shadow-sm">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-gray-700 font-medium">Saved Retreats</h3>
-          <button className="text-blue-500 text-sm hover:text-blue-700 flex items-center gap-1">
-            View all <span>→</span>
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <RetreatCard name="Mountain Serenity" location="Yogyakarta" price="$950" emoji="🏔️" />
-          <RetreatCard name="Beachfront Yoga" location="Canggu" price="$1100" emoji="🏖️" />
-          <RetreatCard name="Forest Meditation" location="Ubud" price="$850" emoji="🌲" />
-          <RetreatCard name="Desert Wellness" location="Jaisalmer" price="$1200" emoji="🏜️" />
-        </div>
-      </section>
     </div>
   );
 };
@@ -490,28 +476,6 @@ const DetailItem = ({ icon, text }) => (
     <span className="mr-2">{icon}</span>
     {text}
   </p>
-);
-
-const RetreatCard = ({ emoji, name, location, price }) => (
-  <div className="border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all">
-    <div className="text-2xl mb-2">{emoji}</div>
-    <h4 className="font-medium text-gray-800">{name}</h4>
-    <p className="text-gray-500 text-sm">{location}</p>
-    <p className="text-gray-700 font-medium mt-2">{price}</p>
-  </div>
-);
-
-const BookingItem = ({ name, date, status }) => (
-  <div className="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-    <p className="font-medium text-gray-800">{name}</p>
-    <p className="text-gray-500 text-sm">{date}</p>
-    <div className="flex justify-between items-center mt-1">
-      <span className={`text-xs px-2 py-1 rounded-full ${status === "Completed" ? "bg-green-50 text-green-600" : "bg-yellow-50 text-yellow-600"}`}>
-        {status}
-      </span>
-      <button className="text-blue-500 text-xs hover:text-blue-700">Details</button>
-    </div>
-  </div>
 );
 
 export default Dashboard;

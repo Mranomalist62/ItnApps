@@ -16,10 +16,16 @@ const Login = ({ setIsLoggedIn }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
-    const success = await handleLogin(e, form, setMessage);
+    e.preventDefault();
+    const [success, role]= await handleLogin(form, setMessage);
     if (success) {
       setIsLoggedIn(true);
-      navigate("/profile");
+      if(role === "admin"){
+        navigate("/admin-dashboard");
+      }
+      else if(role === "user"){
+        navigate("/profile");
+      }
     }
   };
   //   const [email, setEmail] = useState("");
@@ -98,12 +104,12 @@ const Login = ({ setIsLoggedIn }) => {
               </div>
             </div>
 
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <input type="checkbox" id="remember" className="mr-2" />
               <label htmlFor="remember" className="text-sm text-gray-700">
                 Remember me
               </label>
-            </div>
+            </div> */}
 
             <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md">
               Sign In

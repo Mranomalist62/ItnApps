@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 // import Profile from "./pages/Dashboard";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import ScrollToTop from "./components/ScrolltoTop";
 import { sessionValidate } from "./services/AuthService";
 
@@ -21,7 +22,7 @@ function App() {
     return isLoggedIn ? children : <Navigate to="/login" replace />;
   };
   const PublicRoute = ({ isLoggedIn, children }) => {
-    return isLoggedIn ? <Navigate to="/profile" replace /> : children;
+    return isLoggedIn ? <Navigate to="/profile" replace />: children;
   };
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -61,6 +62,11 @@ function App() {
           <Route path="/profile" element={
             <PrivateRoute isLoggedIn={isLoggedIn}>
               <Dashboard setIsLoggedIn={setIsLoggedIn} />
+            </PrivateRoute>
+            } />
+          <Route path="/admin-dashboard" element={
+            <PrivateRoute isLoggedIn={isLoggedIn}>
+              <AdminDashboard setIsLoggedIn={setIsLoggedIn} />
             </PrivateRoute>
             } />
         </Routes>

@@ -1,8 +1,4 @@
-import { useNavigate } from "react-router-dom";
-
-export const handleRegister = async (e, formData, setMessage) => {
-  e.preventDefault();
-
+export const handleRegister = async (formData, setMessage) => {
   if (formData.password !== formData.confirm_password) {
     setMessage("❌ Passwords do not match");
     return false;
@@ -36,9 +32,7 @@ export const handleRegister = async (e, formData, setMessage) => {
   }
 };
 
-export const handleLogin = async (e, formData, setMessage) => {
-  e.preventDefault();
-
+export const handleLogin = async (formData, setMessage) => {
   try {
     const res = await fetch("http://localhost:5000/api/users/login", {
       method: "POST",
@@ -54,15 +48,15 @@ export const handleLogin = async (e, formData, setMessage) => {
     if (res.ok) {
       localStorage.setItem("user", JSON.stringify(data.user));
       setMessage(data.message);
-      return true;
+      return [true, data.user.role];
     } else {
       setMessage(data.message || "Login failed.");
-      return false;
+      return [false, null];
     }
   } catch (err) {
     console.error("Error during login:", err);
     setMessage("Server error.");
-    return false;
+    return [false, null];
   }
 };
 

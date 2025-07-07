@@ -22,5 +22,4 @@ router.put('/update/:id', authMiddleware, uploadUserImage.single('profile_pictur
 // Get user info (Image,etc)
 router.get('/image/:filename', authMiddleware, ImageController.serveUserImage);
 
-
 module.exports = router;

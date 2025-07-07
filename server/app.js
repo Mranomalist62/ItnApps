@@ -4,6 +4,7 @@ const userRoutes = require('./routes/users');
 const retreatRoutes = require('./routes/retreats')
 const destinationRoutes = require('./routes/retreats')
 const session = require('express-session');
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -17,6 +18,8 @@ app.use(
     credentials: true,
   })
 );
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(express.json());     // parse JSON bodies
 app.use(cookieParser());
 app.use(session({

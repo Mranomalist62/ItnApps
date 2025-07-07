@@ -42,26 +42,27 @@ model Session {
   user         User     @relation(fields: [userId], references: [id])
 }
 
-model Destination {
-  id             Int       @id @default(autoincrement())
-  name           String
-  country        String
-  description    String
-  main_image_url String
+// model Destination {
+//   id             Int       @id @default(autoincrement())
+//   name           String
+//   country        String
+//   description    String
+//   main_image_url String
 
-  retreats       Retreat[]
-}
+//   // retreats       Retreat[]
+// }
 
 model Retreat {
   id              Int         @id @default(autoincrement())
-  destination_id  Int
+  // destination_id  Int
   category_id     Int         
   name            String
   description     String
+  location        String
   price_usd       Decimal     @db.Decimal(10, 2)
-  cover_image_url String
+  // cover_image_url String
 
-  destination     Destination @relation(fields: [destination_id], references: [id])
+  // destination     Destination @relation(fields: [destination_id], references: [id])
   category        Category    @relation(fields: [category_id], references: [id])
   images          RetreatImage[]
   activities      Activity[]
@@ -78,7 +79,7 @@ model RetreatImage {
 model Category {
   id        Int       @id @default(autoincrement())
   name      String    @unique
-  desc      String
+  // desc      String
   main      String    
   retreats  Retreat[]
 }

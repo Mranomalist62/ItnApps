@@ -19,8 +19,9 @@ const Register = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
-    const success = await handleRegister(e, form, setMessage);
-    if (success) {
+    e.preventDefault();
+    const response = await handleRegister(form, setMessage);
+    if (response) {
       navigate('/login');
     }
   };

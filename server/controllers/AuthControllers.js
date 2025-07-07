@@ -104,7 +104,8 @@ const UserController = {
           phone_number: user.phone_number,
           location: user.location,
           member_since: user.member_since,
-          profile_picture: user.profile_picture
+          profile_picture: user.profile_picture,
+          role: user.role
         },
       });
     } catch (error) {
@@ -148,7 +149,7 @@ const UserController = {
 
       if (!session) return res.status(401).json({ message: "Invalid session" });
 
-      res.json({ message: "Session valid", user: session.user });
+      res.json({ message: "Session valid", role: session.role });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Server error" });

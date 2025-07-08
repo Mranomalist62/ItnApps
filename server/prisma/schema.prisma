@@ -32,6 +32,7 @@ model User {
   updated_at      DateTime @updatedAt
   sessions        Session[]
   role            String    @default("user") 
+  savedRetreats  SavedRetreat[]  // ← relation
 }
 
 model Session {
@@ -66,6 +67,7 @@ model Retreat {
   category        Category    @relation(fields: [category_id], references: [id])
   images          RetreatImage[]
   activities      Activity[]
+  savedBy         SavedRetreat[]  // ← relation
 }
 
 model RetreatImage {
@@ -98,4 +100,15 @@ model Activity {
 
 model Itinerary{
   id Int @id @default(autoincrement())
+}
+
+
+model SavedRetreat {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  retreat    Retreat  @relation(fields: [retreatId], references: [id])
+  retreatId  Int
+
+  @@unique([userId, retreatId]) // 🚫 Prevent duplicate saves
 }

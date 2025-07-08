@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleLogout } from "../services/AuthService";
 import { handleUpdateProfile } from "../services/UserService";
+import { getSavedRetreats, handleUnsaveRetreat} from "../services/RetreatService";
+
 
 const Dashboard = ({ setIsLoggedIn }) => {
   const [activeMenu, setActiveMenu] = useState("Dashboard");
@@ -77,235 +79,86 @@ const Dashboard = ({ setIsLoggedIn }) => {
 };
 
 const SavedMenu = () => {
+  const [savedRetreats, setSavedRetreats] = useState([]);
+  // const [isSaved, setIsSaved] = useState(true); // Default: already saved
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const retreats = await getSavedRetreats();
+      setSavedRetreats(retreats);
+    };
+    fetchData();
+  }, []);
+
+  const handleUnsave = async (retreatId) => {
+    const success = await handleUnsaveRetreat(retreatId);
+    if (success) {
+      // Remove unsaved retreat from state
+      setSavedRetreats((prev) => prev.filter((r) => r.id !== retreatId));
+    } else {
+      console.error("Failed to unsave retreat");
+    }
+  };
+
+
   return (
     <div className="md:col-span-3">
-      <div className="bg-white rounded-xl shadow-soft p-6 animate-fadeIn shadow-sm ">
+      <div className="bg-white rounded-xl shadow-soft p-6 animate-fadeIn shadow-sm">
         <h2 className="text-2xl font-display font-bold mb-6">Saved Retreats</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="relative h-48">
-              <img
-                alt="Mountain Serenity Escape"
-                loading="lazy"
-                decoding="async"
-                data-nimg="fill"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                style={{ position: "absolute", height: "100%", width: "100%", inset: "0px", color: "transparent" }}
-                src="/placeholder.svg?height=400&amp;width=600"></img>
-              <button className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-50">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-heart">
-                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
-                </svg>
-              </button>
-            </div>
-            <div className="p-4">
-              <div className="flex items-center text-emerald-700 mb-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-map-pin mr-1">
-                  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                <span className="text-sm">Yogyakarta</span>
+          {savedRetreats.length > 0 ? (
+            savedRetreats.map((retreat) => (
+              <div
+                key={retreat.id}
+                className="border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-shadow"
+              >
+                <div className="relative h-48">
+                  <img
+                    alt={retreat.name}
+                    src={`http://localhost:5000/api/retreats/image/${retreat.images[0]?.image_url || "placeholder.svg"}`}
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 w-full h-full"
+                  />
+                  <button
+                    onClick={() => handleUnsave(retreat.id)}
+                    className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
+                    title="Unsave"
+                  >
+                    {/* Filled Heart Emoji or Icon */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 
+                        4 4 6.5 4c1.74 0 3.41 1.01 4.5 2.09C12.09 5.01 
+                        13.76 4 15.5 4 18 4 20 6 20 8.5c0 3.78-3.4 
+                        6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center text-emerald-700 mb-1">
+                    📍 <span className="text-sm ml-1">{retreat.location}</span>
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">{retreat.name}</h3>
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">
+                      {retreat.category.name}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-bold">${retreat.price_usd}</span>
+                    <a className="btn-outline text-sm py-1.5 px-4" href={`/retreat/${retreat.id}`}>
+                      View Details
+                    </a>
+                  </div>
+                </div>
               </div>
-              <h3 className="font-bold text-lg mb-2">Mountain Serenity Escape</h3>
-              <div className="flex justify-between items-center mb-3">
-                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Adventure &amp; Wellness</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-bold">$950</span>
-                <a className="btn-outline text-sm py-1.5 px-4" href="/retreat/3">
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="relative h-48">
-              <img
-                alt="Jungle Zen Hideaway"
-                loading="lazy"
-                decoding="async"
-                data-nimg="fill"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                style={{ position: "absolute", height: "100%", width: "100%", inset: "0px", color: "transparent" }}
-                src="/placeholder.svg?height=400&amp;width=600"></img>
-              <button className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center  justify-center text-red-500 hover:bg-red-50">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-heart">
-                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
-                </svg>
-              </button>
-            </div>
-            <div className="p-4">
-              <div className="flex items-center text-emerald-700 mb-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-map-pin mr-1">
-                  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                <span className="text-sm">Ubud, Bali</span>
-              </div>
-              <h3 className="font-bold text-lg mb-2">Jungle Zen Hideaway</h3>
-              <div className="flex justify-between items-center mb-3">
-                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Yoga  &amp; Meditation</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-bold">$1200</span>
-                <a className="btn-outline text-sm py-1.5 px-4" href="/retreat/3">
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="relative h-48">
-              <img
-                alt="Beachfront Yoga Haven"
-                loading="lazy"
-                decoding="async"
-                data-nimg="fill"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                style={{ position: "absolute", height: "100%", width: "100%", inset: "0px", color: "transparent" }}
-                src="/placeholder.svg?height=400&amp;width=600"></img>
-              <button className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-50">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-heart">
-                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
-                </svg>
-              </button>
-            </div>
-            <div className="p-4">
-              <div className="flex items-center text-emerald-700 mb-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-map-pin mr-1">
-                  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                <span className="text-sm">Canggu, Bali</span>
-              </div>
-              <h3 className="font-bold text-lg mb-2">Beachfront Yoga Haven</h3>
-              <div className="flex justify-between items-center mb-3">
-                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Yoga &amp; Surfing</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-bold">$1100</span>
-                <a className="btn-outline text-sm py-1.5 px-4" href="/retreat/4">
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="relative h-48">
-              <img
-                alt="Volcano Yoga Trail"
-                loading="lazy"
-                decoding="async"
-                data-nimg="fill"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                style={{ position: "absolute", height: "100%", width: "100%", inset: "0px", color: "transparent" }}
-                src="/placeholder.svg?height=400&amp;width=600"></img>
-              <button className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-50">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-heart">
-                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
-                </svg>
-              </button>
-            </div>
-            <div className="p-4">
-              <div className="flex items-center text-emerald-700 mb-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-map-pin mr-1">
-                  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                <span className="text-sm">Yogyakarta</span>
-              </div>
-              <h3 className="font-bold text-lg mb-2">Volcano Yoga Trail</h3>
-              <div className="flex justify-between items-center mb-3">
-                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded">Hiking &amp; Yoga</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-bold">$980</span>
-                <a className="btn-outline text-sm py-1.5 px-4" href="/retreat/3">
-                  View Details
-                </a>
-              </div>
-            </div>
-          </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 col-span-full">You haven't saved any retreats yet.</p>
+          )}
         </div>
       </div>
     </div>

@@ -21,6 +21,13 @@ router.post(
   RetreatController.createRetreat
 );
 
+router.post(
+  "/save/:retreatId", 
+  authMiddleware, 
+  RetreatController.saveRetreat
+);
+
+
 // PUT
 router.put(
   '/:id',
@@ -29,13 +36,29 @@ router.put(
   RetreatController.updateRetreat
 );
 
+router.get(
+  "/save", 
+  authMiddleware, 
+  RetreatController.getSavedRetreats
+);
+
+
 // DELETE
 router.delete(
   '/:id',
   authMiddleware.withAdmin,
   RetreatController.deleteRetreat
 );
+router.delete(
+  "/save/:retreatId", 
+  authMiddleware, 
+  RetreatController.unsaveRetreat
+);
+
+
+//Image
 
 router.get('/image/:filename', ImageController.serveRetreatImage);
+
 
 module.exports = router;

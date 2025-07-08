@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ShowUserRetreats, ShowSearchedRetreats, handleDeleteRetreat } from "../services/RetreatService";
+import { ShowUserRetreats, ShowSearchedRetreats, handleDeleteRetreat, handleSaveRetreat, handleUnsaveRetreat } from "../services/RetreatService";
 
 const Retreat = () => {
   return (
@@ -15,11 +15,23 @@ const Retreat = () => {
 };
 
 const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data , getRetreats}) => {
-  const handleSaved = () =>{}
+  const [isSaved, setIsSaved] = useState(false);
+  
+  const handleSaved = async () =>{
+    const success = await handleSaveRetreat(data.retreat_id);
+    if (success || success === 'already_saved') {
+      console.log("Retreat saved or already saved");
+      setIsSaved(true);
+    } else {
+      console.error("Failed to save retreat.");
+    }
+  }
+
   const handleEdit = () =>{
     setActiveMenu("Edit Form");
     setSelectedRetreatId(data.retreat_id);
   }
+
   const handleDelete = async () =>{
     const alert = confirm("Sangatkah yakin?");
     if(alert == true){
@@ -29,6 +41,9 @@ const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data , getRetreats})
       }
     }
   }
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = user?.role === "admin";
   return(<div className="group relative overflow-hidden rounded-xl bg-white shadow-lg hover:shadow-xl/30 transition-all duration-500 transform hover:-translate-y-1">
     <div className="relative h-56 md:h-64 overflow-hidden">
       <img
@@ -41,46 +56,68 @@ const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data , getRetreats})
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       {/* <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10">Featured</div> */}
       <div className="flex gap-1 absolute top-0 right-0">
-        <button
-          type="button"
-          onClick={() => handleSaved()}
-          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm hover:text-accent-foreground rounded-md w-8 h-8 p-0 text-red-500 bg-red-50 hover:bg-red-300 m-1">
-          <svg className="w-6 h-6 text-pink" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
-            />
+      <button
+        type="button"
+        onClick={handleSaved}
+        className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
+      >
+        {isSaved ? (
+          // saved
+          <svg
+            className="w-6 h-6 text-pink-500 fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <path d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
           </svg>
-        </button>
-        <button
-          type="button"
-          onClick={() => handleEdit()}
-          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm hover:text-accent-foreground rounded-md w-8 h-8 p-0 text-red-500 bg-red-50 hover:bg-red-300 m-1">
-          <svg className="w-6 h-6 text-yellow-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
-            />
+        ) : (
+          //before saving
+          <svg
+            className="w-6 h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
           </svg>
-        </button>
-        <button
-          type="button"
-          onClick={() => handleDelete()}
-          className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm hover:text-accent-foreground rounded-md w-8 h-8 p-0 text-red-500 bg-red-50 hover:bg-red-300 m-1">
-          <svg className="w-6 h-6 text-red " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-            <path
-              fill-rule="evenodd"
-              d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
+        )}
+      </button>
+        {isAdmin && (
+          <button
+            type="button"
+            onClick={() => handleEdit()}
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm hover:text-accent-foreground rounded-md w-8 h-8 p-0 text-red-500 bg-red-50 hover:bg-red-300 m-1">
+            <svg className="w-6 h-6 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
+              />
+            </svg>
+          </button>
+        )}
+
+        {/* Delete Button - Only for Admins */}
+        {isAdmin && (
+          <button
+            type="button"
+            onClick={() => handleDelete()}
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm hover:text-accent-foreground rounded-md w-8 h-8 p-0 text-red-500 bg-red-50 hover:bg-red-300 m-1">
+            <svg className="w-6 h-6 text-red" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                fillRule="evenodd"
+                d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        )}
       </div>
       <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
         <a className="font-bold text-lg hover:underline" href="/retreat/1">
@@ -124,6 +161,7 @@ const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data , getRetreats})
 export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retreatFetch = ShowUserRetreats }) => {
   const [cardData, setCardData] = useState([]);
   const [searchData, setSearchData] = useState({
+    name: "",
     location: "",
     category: "",
     minPrice: "",
@@ -188,6 +226,10 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
       }));
       setCardData(formattedData);
     }
+    else {
+      console.log("nothing");
+      setCardData([]);
+    } 
   };
   return (
     <div>
@@ -195,7 +237,10 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
       <div className="mb-6 relative">
         <input
           type="text"
-          name="search"
+          name="name"
+          id = "name"
+          value = {searchData.name}
+          onChange={handleChange}
           placeholder="Search retreats, activities, or locations..."
           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
         />
@@ -314,11 +359,22 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {cardData.map((data) => (
-          <div key={data.retreat_id}>
-            <RetreatCard setActiveMenu={setActiveMenu} setSelectedRetreatId={setSelectedRetreatId} data={data} getRetreats={getRetreats}/>
+        {cardData.length > 0 ? (
+          cardData.map((data) => (
+            <div key={data.retreat_id}>
+              <RetreatCard
+                setActiveMenu={setActiveMenu}
+                setSelectedRetreatId={setSelectedRetreatId}
+                data={data}
+                getRetreats={getRetreats}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full text-center text-gray-500 text-lg py-10">
+            🐾 Nothing found.
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

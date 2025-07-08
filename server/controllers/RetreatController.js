@@ -63,22 +63,29 @@ const RetreatController = {
   },
 
   searchRetreats: async (req, res) => {
-    const { location, category, minPrice, maxPrice } = req.query;
-
+    const { location, category, minPrice, maxPrice, name } = req.query;
+  
     try {
       const retreats = await prisma.retreat.findMany({
         where: {
           AND: [
+            name
+              ? {
+                  name: {
+                    contains: name.toLowerCase(),
+                  },
+                }
+              : {},
             location
               ? {
-                  location: { equals: location },
+                  location: {
+                    contains: location.toLowerCase(),
+                  },
                 }
               : {},
             category
               ? {
-                  category: {
-                    id: { equals: parseInt(category) },
-                  },
+                  category_id: parseInt(category),
                 }
               : {},
             minPrice || maxPrice
@@ -92,12 +99,11 @@ const RetreatController = {
           ],
         },
         include: {
-          // destination: true,
           category: true,
           images: true,
         },
       });
-
+  
       res.json(retreats);
     } catch (error) {
       console.error("Search error:", error);
@@ -298,6 +304,132 @@ const RetreatController = {
       res.status(500).json({ error: "Failed to delete retreat" });
     }
   },
+
+  saveRetreat: async (req, res) => {
+  try {
+    const userId = req.user.id; // Or however you're getting the authenticated user
+    const { retreatId } = req.body;
+
+    // Check if already saved (optional, or rely on unique constraint)
+    const existing = await prisma.savedRetreat.findUnique({
+      where: {
+        userId_retreatId: {
+          userId,
+          retreatId,
+        },
+      },
+    });
+
+    if (existing) {
+      return res.status(409).json({ error: "Retreat already saved." });
+    }
+
+    await prisma.savedRetreat.create({
+      data: {
+        userId,
+        retreatId,
+      },
+    });
+
+    res.status(201).json({ message: "Retreat successfully saved." });
+  } catch (error) {
+    console.error("Error saving retreat:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+},
+
+
+//SECTION SAVING RETREAT
+
+saveRetreat: async (req, res) => {
+  try {
+    const userId = req.user.id; // From session middleware
+    const retreatId = parseInt(req.params.retreatId);
+
+    if (isNaN(retreatId)) {
+      return res.status(400).json({ error: "Invalid retreat ID" });
+    }
+
+    // Optional: prevent duplicates
+    const existing = await prisma.savedRetreat.findUnique({
+      where: {
+        userId_retreatId: {
+          userId,
+          retreatId,
+        },
+      },
+    });
+
+    if (existing) {
+      return res.status(409).json({ error: "Retreat already saved" });
+    }
+
+    await prisma.savedRetreat.create({
+      data: {
+        userId,
+        retreatId,
+      },
+    });
+
+    res.status(201).json({ message: "Retreat successfully saved" });
+  } catch (error) {
+    console.error("Error saving retreat:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+},
+
+unsaveRetreat: async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const retreatId = parseInt(req.params.retreatId);
+
+    if (isNaN(retreatId)) {
+      return res.status(400).json({ error: "Invalid retreat ID" });
+    }
+
+    await prisma.savedRetreat.delete({
+      where: {
+        userId_retreatId: {
+          userId,
+          retreatId,
+        },
+      },
+    });
+
+    res.status(200).json({ message: "Retreat successfully unsaved" });
+  } catch (error) {
+    console.error("Error unsaving retreat:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+},
+
+getSavedRetreats: async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const savedRetreats = await prisma.savedRetreat.findMany({
+      where: { userId },
+      include: {
+        retreat: {
+          include: {
+            category: true,
+            images: true,
+          },
+        },
+      },
+    });
+
+    const retreats = savedRetreats.map((saved) => saved.retreat);
+
+    res.status(200).json(retreats);
+  } catch (error) {
+    console.error("Error fetching saved retreats:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+
+
 };
 
 module.exports = RetreatController;

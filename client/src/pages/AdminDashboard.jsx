@@ -636,11 +636,12 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                 <select
                   onChange={handleRetreatChange}
                   required
-                  defaultValue={"1"}
+                  defaultValue={""}
                   name="retreat_category"
                   value={retreatsData.retreat_category}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-                  <option value="1">Relaxation</option>
+                  <option value="">All Category</option>
+                  <option value="1">Relaxation</option>   
                   <option value="2">Health</option>
                   <option value="3">Spiritual</option>
                   <option value="4">Beauty</option>

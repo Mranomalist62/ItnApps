@@ -12,7 +12,7 @@ router.get('/random', RetreatController.getRandomRetreats); // For homepage
 router.get('/search', RetreatController.searchRetreats);    // With query params
 router.get('/detail/:id', RetreatController.getRetreatsById);    // With id params
 router.get('/all', authMiddleware.withAdmin, RetreatController.getAllRetreats); // Admin
-
+router.get('/by-activity', RetreatController.getRetreatsByActivity);
 // POST
 router.post(
   '/create',
@@ -49,6 +49,7 @@ router.delete(
   authMiddleware.withAdmin,
   RetreatController.deleteRetreat
 );
+
 router.delete(
   "/save/:retreatId", 
   authMiddleware, 

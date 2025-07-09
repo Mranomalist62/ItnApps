@@ -640,15 +640,11 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                   name="retreat_category"
                   value={retreatsData.retreat_category}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-                  <option value="1">Yoga</option>
-                  <option value="2">Spa</option>
-                  <option value="3">Luxury</option>
-                  <option value="4">Adventure</option>
-                  <option value="5">Surfing</option>
-                  <option value="6">Cultural</option>
-                  <option value="7">Meditation</option>
-                  <option value="8">Wellness</option>
-                  <option value="9">Detox</option>
+                  <option value="1">Relaxation</option>
+                  <option value="2">Health</option>
+                  <option value="3">Spiritual</option>
+                  <option value="4">Beauty</option>
+                  <option value="5">Detox</option>
                 </select>
               </div>
               <div>

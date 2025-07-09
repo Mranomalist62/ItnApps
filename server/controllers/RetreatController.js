@@ -62,6 +62,40 @@ const RetreatController = {
     }
   },
 
+  getRetreatsByActivity: async (req, res) => {
+    const { activity } = req.query;
+  
+    if (!activity) {
+      return res.status(400).json({ error: "Activity is required" });
+    }
+  
+    try {
+      const matchingActivities = await prisma.activity.findMany({
+        where: {
+          title: {
+            contains: activity, // MySQL is case-insensitive by default
+          },
+        },
+        include: {
+          retreat: {
+            include: {
+              category: true,
+              images: true,
+            },
+          },
+        },
+      });
+  
+      // Map back to the retreat data
+      const retreats = matchingActivities.map((act) => act.retreat);
+  
+      res.json({ retreats });
+    } catch (error) {
+      console.error("Error fetching retreats by activity:", error);
+      res.status(500).json({ error: "Failed to fetch retreats by activity" });
+    }
+  },
+
   searchRetreats: async (req, res) => {
     const { location, category, minPrice, maxPrice, name } = req.query;
   

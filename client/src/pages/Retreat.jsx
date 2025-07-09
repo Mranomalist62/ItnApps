@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShowUserRetreats, ShowSearchedRetreats, handleDeleteRetreat, handleSaveRetreat, handleUnsaveRetreat } from "../services/RetreatService";
@@ -160,15 +161,19 @@ const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data, getRetreats, m
   );
 };
 export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retreatFetch = ShowUserRetreats, mode = "show" }) => {
+  const url = useLocation();
+  const params = new URLSearchParams(url.search);
+  const initialLocation = params.get("location") || "";
   const [cardData, setCardData] = useState([]);
   const [searchData, setSearchData] = useState({
     name: "",
-    location: "",
+    location: initialLocation,
     category: "",
     minPrice: "",
     maxPrice: "",
     priceRange: ""
   });
+
   const getRetreats = async () => {
     const response = await retreatFetch();
     console.log("Sign");
@@ -186,7 +191,11 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
     }
   };
   useEffect(() => {
-    getRetreats();
+    if (initialLocation) {
+      searchRetreats(); // run filtered
+    } else {
+        getRetreats(); // load all
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -276,10 +285,9 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
               <option value="">All Locations</option>
               <option value="Bali">Bali</option>
               <option value="Yogyakarta">Yogyakarta</option>
-              <option value="Ubud">Ubud</option>
-              <option value="Purwokerto Lor">Purwokerto Lor</option>
-              <option value="Seminyak">Seminyak</option>
-              <option value="Canggu">Canggu</option>
+              <option value="Jakarta">Jakarta</option>
+              <option value="Surabaya">Surabaya</option>
+              <option value="Bandung">Bandung</option>
             </select>
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">📍</div>
           </div>
@@ -297,16 +305,11 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
               value={searchData.category}
               onChange={handleChange}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none">
-              <option value="">All Categories</option>
-              <option value="1">Yoga</option>
-              <option value="2">Spa</option>
-              <option value="3">Luxury</option>
-              <option value="4">Adventure</option>
-              <option value="5">Surfing</option>
-              <option value="6">Cultural</option>
-              <option value="7">Meditation</option>
-              <option value="8">Wellness</option>
-              <option value="9">Detox</option>
+                <option value="1">Relaxation</option>
+                <option value="2">Health</option>
+                <option value="3">Spiritual</option>
+                <option value="4">Beauty</option>
+                <option value="5">Detox</option>
             </select>
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">🧘</div>
           </div>

@@ -83,7 +83,7 @@ const Navbar = ({ isLoggedIn }) => {
             <Link to="/retreats" className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md text-base font-medium">Retreats</Link>
             <Link to="/destinations" className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md text-base font-medium">Destinations</Link>
             <Link to="/contact" className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md text-base font-medium">Contact & FAQ</Link>
-            <Link to="/find-retreat" className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md text-base font-medium">Find My Retreat</Link>
+            <Link to="/find-my-retreat" className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md text-base font-medium">Find My Retreat</Link>
             {isLoggedIn ? (
                 <Link
                 to="/profile"

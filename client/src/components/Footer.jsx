@@ -47,21 +47,6 @@
             </div>
             </div>
 
-            {/* Newsletter Subscription */}
-            <div className="mt-12">
-            <h2 className="text-lg font-semibold mb-4">Subscribe to our newsletter</h2>
-            <div className="flex flex-col sm:flex-row gap-2 max-w-md">
-                <input 
-                type="email" 
-                placeholder="Your email" 
-                className="px-4 py-2 border border-gray-300 rounded-md flex-grow"
-                />
-                <button className="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-gray-700">
-                Subscribe
-                </button>
-            </div>
-            </div>
-
             {/* Copyright */}
             <div className="mt-12 pt-6 border-t border-gray-300 text-center">
             <p>© 2025 Serenity Retreats. All rights reserved.</p>

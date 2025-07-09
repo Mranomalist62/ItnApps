@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { handleLogout } from "../services/AuthService";
 import { handleUpdateProfile } from "../services/UserService";
 import { getSavedRetreats, handleUnsaveRetreat} from "../services/RetreatService";
-
+import ItineraryMenu from "./Itinerary";
 
 const Dashboard = ({ setIsLoggedIn }) => {
   const [activeMenu, setActiveMenu] = useState("Dashboard");
@@ -148,7 +148,7 @@ const SavedMenu = () => {
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-bold">${retreat.price_usd}</span>
+                    <span className="text-lg font-bold">${retreat.price_idr}</span>
                     <a className="btn-outline text-sm py-1.5 px-4" href={`/retreat/${retreat.id}`}>
                       View Details
                     </a>
@@ -190,7 +190,7 @@ const SettingMenu = ({ userData }) => {
     const response = await handleUpdateProfile(e, form);
   };
   return (
-    <div className="md:col-span-3">
+    <div className="md:col-span-3 shadow-soft shadow-sm">
       <div className="bg-white rounded-xl shadow-soft p-6 animate-fadeIn">
         <h2 className="text-2xl font-display font-bold mb-6">Account Settings</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -301,17 +301,8 @@ const SettingMenu = ({ userData }) => {
 
 const DashboardMenu = () => {
   return (
-    <div className="lg:col-span-3 space-y-6">
-      <section className="bg-white p-5 rounded-xl shadow-sm border-l-4 border-blue-500">
-        <h3 className="text-gray-700 font-medium mb-3">Upcoming Retreat</h3>
-        <h4 className="font-medium text-gray-800 mb-2">Jungle Harmony Retreat</h4>
-        <DetailItem icon="📍" text="Ubud, Bali" />
-        <DetailItem icon="📅" text="Jun 15-22, 2023" />
-        <div className="flex gap-2 mt-4">
-          <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700">View Details</button>
-          <button className="flex-1 border border-gray-200 text-gray-700 py-2 rounded-lg text-sm hover:bg-gray-50">Add to Calendar</button>
-        </div>
-      </section>
+    <div className="lg:col-span-3 space-y-6 shadow-soft shadow-sm">
+      <ItineraryMenu/>
     </div>
   );
 };
@@ -322,13 +313,6 @@ const NavItem = ({ icon, label, active, onClick }) => (
     <span className="mr-3">{icon}</span>
     <span>{label}</span>
   </li>
-);
-
-const DetailItem = ({ icon, text }) => (
-  <p className="flex items-center text-gray-600 text-sm mb-1">
-    <span className="mr-2">{icon}</span>
-    {text}
-  </p>
 );
 
 export default Dashboard;

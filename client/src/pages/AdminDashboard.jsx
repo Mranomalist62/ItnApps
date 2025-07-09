@@ -78,7 +78,7 @@ const AdminDashboard = ({ setIsLoggedIn }) => {
               <NavItem icon="⚙️" label="Settings" active={activeMenu === "Settings"} onClick={() => setActiveMenu("Settings")} />
             </ul>
             <ul className="space-y-2 pt-2 border-t border-gray-500">
-              <NavItem icon="🌋" label="Nemo Out" active={activeMenu === "Sign Out"} onClick={() => handleLogout(setIsLoggedIn, navigate)} />
+              <NavItem icon="🌋" label="Sign Out" active={activeMenu === "Sign Out"} onClick={() => handleLogout(setIsLoggedIn, navigate)} />
             </ul>
           </section>
         </div>
@@ -103,7 +103,7 @@ const ManageMenu = ({ setActiveMenu, setSelectedRetreatId }) => {
           onClick={() => setActiveMenu("Retreat Form")}>
           Add Retreat
         </button>
-        <FilterSearchRetreat setActiveMenu={setActiveMenu} setSelectedRetreatId={setSelectedRetreatId} retreatFetch={ShowAllRetreats} />
+        <FilterSearchRetreat setActiveMenu={setActiveMenu} setSelectedRetreatId={setSelectedRetreatId} retreatFetch={ShowAllRetreats} mode="edit" />
       </div>
     </div>
   );
@@ -327,53 +327,7 @@ const DashboardMenu = () => {
             </div>
           </div>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-wellness-sage/20">
-            <div className="flex flex-col space-y-1.5 p-6">
-              <div className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2 text-wellness-forest">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-activity h-5 w-5">
-                  <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path>
-                </svg>
-                Recent Activity
-              </div>
-            </div>
-            <div className="p-6 pt-0 space-y-4">
-              <div className="flex items-center gap-3 m-0 p-3 rounded-lg bg-wellness-sage/5">
-                <div className="h-2 w-2 rounded-full bg-wellness-ocean"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-wellness-forest">New retreat added</p>
-                  <p className="text-xs text-wellness-sage">Himalayan Mindfulness Retreat</p>
-                </div>
-                <span className="text-xs text-wellness-sage">2h ago</span>
-              </div>
-              <div className="flex items-center gap-3 m-0 p-3 rounded-lg bg-wellness-sage/5">
-                <div className="h-2 w-2 rounded-full bg-wellness-sage"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-wellness-forest">User registered</p>
-                  <p className="text-xs text-wellness-sage">sarah.wellness@email.com</p>
-                </div>
-                <span className="text-xs text-wellness-sage">4h ago</span>
-              </div>
-              <div className="flex items-center gap-3 m-0 p-3 rounded-lg bg-wellness-sage/5">
-                <div className="h-2 w-2 rounded-full bg-wellness-forest"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-wellness-forest">Booking confirmed</p>
-                  <p className="text-xs text-wellness-sage">Bali Wellness Retreat</p>
-                </div>
-                <span className="text-xs text-wellness-sage">6h ago</span>
-              </div>
-            </div>
-          </div>
+        <div className="grid gap-6">
           <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-wellness-sage/20">
             <div className="flex flex-col space-y-1.5 p-6">
               <div className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2 text-wellness-forest">
@@ -401,81 +355,6 @@ const DashboardMenu = () => {
                   <div>
                     <p className="text-sm font-medium text-wellness-forest">Bali Wellness Retreat</p>
                     <p className="text-xs text-wellness-sage">45 bookings</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-star h-4 w-4 fill-yellow-400 text-yellow-400">
-                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                  </svg>
-                  <span className="text-sm font-medium text-wellness-forest">4.9</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-wellness-sage/5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-wellness-ocean text-white text-sm font-medium">2</div>
-                  <div>
-                    <p className="text-sm font-medium text-wellness-forest">Costa Rica Yoga Haven</p>
-                    <p className="text-xs text-wellness-sage">38 bookings</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-star h-4 w-4 fill-yellow-400 text-yellow-400">
-                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                  </svg>
-                  <span className="text-sm font-medium text-wellness-forest">4.8</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-wellness-sage/5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-wellness-ocean text-white text-sm font-medium">3</div>
-                  <div>
-                    <p className="text-sm font-medium text-wellness-forest">Swiss Alps Detox</p>
-                    <p className="text-xs text-wellness-sage">32 bookings</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-star h-4 w-4 fill-yellow-400 text-yellow-400">
-                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
-                  </svg>
-                  <span className="text-sm font-medium text-wellness-forest">4.7</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-wellness-sage/5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-wellness-ocean text-white text-sm font-medium">4</div>
-                  <div>
-                    <p className="text-sm font-medium text-wellness-forest">Thailand Meditation Center</p>
-                    <p className="text-xs text-wellness-sage">28 bookings</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -530,7 +409,7 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
           setRetreatsData({
             retreat_name: response.name || "",
             retreat_location: response.location || "",
-            retreat_price: response.price_usd || "",
+            retreat_price: response.price_idr || "",
             retreat_category: response.category?.id || "", // assuming category is an object
             retreat_desc: response.description || "",
           });
@@ -603,6 +482,16 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
     }));
     setImageData([...imageData, ...newImages]);
   };
+  const handleDropUpload = (e) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files);
+    const newImages = files.map((file) => ({
+      imageName: file.name,
+      imageFile: file,
+      preview: URL.createObjectURL(file),
+    }));
+    setImageData((prev) => [...prev, ...newImages]);
+  };
   const handleActivityChange = (e) => {
     setCurrentActivity({ ...currentActivity, [e.target.name]: e.target.value });
   };
@@ -659,7 +548,7 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
           <div className="md:col-span-3">
             <form className="space-y-6" onSubmit={handleSubmit} encType="multipart/form-data">
               <div>
-                <div className="flex items-center justify-center w-full">
+                <div className="flex items-center justify-center w-full" onDragOver={(e) => e.preventDefault()} onDrop={handleDropUpload}>
                   <label
                     for="dropzone-file"
                     className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -681,7 +570,7 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                       <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                         <span className="font-semibold">Click to upload</span> or drag and drop
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">PNG or JPG (MAX 3 IMAGES)</p>
                     </div>
                     <input id="dropzone-file" type="file" className="hidden" multiple accept="image/*" onChange={handleFilesChange} />
                   </label>
@@ -727,8 +616,8 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                     Price
                   </label>
                   <div className="flex">
-                    <span className="inline-flex items-center px-3 text-lg text-white border rounded-e-0 border-e-0 rounded-s-md bg-gray-600 border-gray-600">
-                      $
+                    <span className="inline-flex items-center px-3 text-md text-white border rounded-e-0 border-e-0 rounded-s-md bg-gray-600 border-gray-600">
+                      Rp
                     </span>
                     <input
                       type="text"
@@ -839,7 +728,10 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                 </div>
               </div>
               <div className="pt-4">
-                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                <button
+                  type="submit"
+                  className="bg-blue-600 disabled:pointer-events-none disabled:opacity-50 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                  disabled={activitiesData.length === 0 || imageData.length === 0 || Object.values(retreatsData).every((value) => value === "")}>
                   Save Changes
                 </button>
               </div>

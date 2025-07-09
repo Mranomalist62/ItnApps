@@ -15,6 +15,8 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ScrollToTop from "./components/ScrolltoTop";
 import { sessionValidate } from "./services/AuthService";
+import DetailPage from "./pages/Detail";
+import { ThemeConfig } from "flowbite-react";
 
 
 function App() {
@@ -42,12 +44,14 @@ function App() {
     <Router>
       <ScrollToTop />
       <Navbar isLoggedIn={isLoggedIn} />
+      <ThemeConfig dark={false} />
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/destinations" element={<Destinations />} />
           <Route path="/about" element={<About />} />
           <Route path="/retreats" element={<Retreats />} />
+          <Route path="/detail/:id" element={<DetailPage />} />
           <Route path="/find-my-retreat" element={<FindMyRetreat />} />
           <Route path="/login" element={
             <PublicRoute isLoggedIn={isLoggedIn}>

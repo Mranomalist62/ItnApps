@@ -90,7 +90,7 @@ const RetreatController = {
               : {},
             minPrice || maxPrice
               ? {
-                  price_usd: {
+                  price_idr: {
                     gte: parseFloat(minPrice) || 0,
                     lte: parseFloat(maxPrice) || 99999,
                   },
@@ -122,7 +122,7 @@ const RetreatController = {
         data: {
           name: parsedRetreat.retreat_name,
           location: parsedRetreat.retreat_location,
-          price_usd: parseFloat(parsedRetreat.retreat_price),
+          price_idr: parseFloat(parsedRetreat.retreat_price),
           description: parsedRetreat.retreat_desc,
           category: {
             connect: { id: parseInt(parsedRetreat.retreat_category) },
@@ -191,7 +191,7 @@ const RetreatController = {
         data: {
           name: parsedRetreat.retreat_name,
           location: parsedRetreat.retreat_location,
-          price_usd: parseFloat(parsedRetreat.retreat_price),
+          price_idr: parseFloat(parsedRetreat.retreat_price),
           description: parsedRetreat.retreat_desc,
           category: {
             connect: { id: parseInt(parsedRetreat.retreat_category) },

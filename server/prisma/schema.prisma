@@ -33,6 +33,7 @@ model User {
   sessions        Session[]
   role            String    @default("user") 
   savedRetreats  SavedRetreat[]  // ← relation
+  itineraries     Itinerary[]
 }
 
 model Session {
@@ -60,7 +61,7 @@ model Retreat {
   name            String
   description     String
   location        String
-  price_usd       Decimal     @db.Decimal(10, 2)
+  price_idr       Decimal     @db.Decimal(10, 2)
   // cover_image_url String
 
   // destination     Destination @relation(fields: [destination_id], references: [id])
@@ -68,6 +69,7 @@ model Retreat {
   images          RetreatImage[]
   activities      Activity[]
   savedBy         SavedRetreat[]  // ← relation
+  itineraries     ItineraryItem[]
 }
 
 model RetreatImage {
@@ -98,10 +100,25 @@ model Activity {
   retreat    Retreat  @relation(fields: [retreat_id], references: [id])
 }
 
-model Itinerary{
-  id Int @id @default(autoincrement())
+model Itinerary {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  start_date   DateTime
+  end_date     DateTime
+
+  user         User     @relation(fields: [userId], references: [id])
+  itineraries ItineraryItem[]
 }
 
+model ItineraryItem {
+  id           Int      @id @default(autoincrement())
+  itinerary_Id Int
+  retreat_id   Int?
+  planned_date DateTime
+
+  retreat      Retreat?  @relation(fields: [retreat_id], references: [id])
+  itinerary     Itinerary  @relation(fields: [itinerary_Id], references: [id])
+}
 
 model SavedRetreat {
   id         Int      @id @default(autoincrement())

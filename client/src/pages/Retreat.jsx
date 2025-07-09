@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ShowUserRetreats, ShowSearchedRetreats, handleDeleteRetreat, handleSaveRetreat, handleUnsaveRetreat } from "../services/RetreatService";
 
 const Retreat = () => {
@@ -14,151 +15,151 @@ const Retreat = () => {
   );
 };
 
-const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data , getRetreats}) => {
+const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data, getRetreats, mode = "show" }) => {
   const [isSaved, setIsSaved] = useState(false);
-  
-  const handleSaved = async () =>{
+  const navigate = useNavigate();
+  const handleSaved = async () => {
     const success = await handleSaveRetreat(data.retreat_id);
-    if (success || success === 'already_saved') {
+    if (success || success === "already_saved") {
       console.log("Retreat saved or already saved");
       setIsSaved(true);
     } else {
       console.error("Failed to save retreat.");
     }
-  }
+  };
 
-  const handleEdit = () =>{
+  const handleEdit = () => {
     setActiveMenu("Edit Form");
     setSelectedRetreatId(data.retreat_id);
-  }
+  };
 
-  const handleDelete = async () =>{
+  const handleDelete = async () => {
     const alert = confirm("Sangatkah yakin?");
-    if(alert == true){
+    if (alert == true) {
       const response = await handleDeleteRetreat(data.retreat_id);
-      if(response){
+      if (response) {
         getRetreats();
       }
     }
-  }
+  };
 
   const user = JSON.parse(localStorage.getItem("user"));
   const isAdmin = user?.role === "admin";
-  return(<div className="group relative overflow-hidden rounded-xl bg-white shadow-lg hover:shadow-xl/30 transition-all duration-500 transform hover:-translate-y-1">
-    <div className="relative h-56 md:h-64 overflow-hidden">
-      <img
-        loading="lazy"
-        decoding="async"
-        data-nimg="fill"
-        className="object-cover transition-transform duration-700 group-hover:scale-110"
-        style={{ position: "absolute", height: "100%", width: "100%", inset: "0px", color: "transparent" }}
-        src={"http://localhost:5000/api/retreats/image/" + data.retreat_cover}></img>
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      {/* <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10">Featured</div> */}
-      <div className="flex gap-1 absolute top-0 right-0">
-      <button
-        type="button"
-        onClick={handleSaved}
-        className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-50"
-      >
-        {isSaved ? (
-          // saved
+  const pageMode = mode;
+  return (
+    <div className="group relative overflow-hidden rounded-xl bg-white shadow-lg hover:shadow-xl/30 transition-all duration-500 transform hover:-translate-y-1">
+      <div className="relative h-56 md:h-64 overflow-hidden">
+        <img
+          loading="lazy"
+          decoding="async"
+          data-nimg="fill"
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          style={{ position: "absolute", height: "100%", width: "100%", inset: "0px", color: "transparent" }}
+          src={"http://localhost:5000/api/retreats/image/" + data.retreat_cover}></img>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        {/* <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10">Featured</div> */}
+        <div className="flex gap-1 absolute top-0 right-0">
+          <button
+            type="button"
+            onClick={handleSaved}
+            className="m-1 w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-50">
+            {isSaved ? (
+              // saved
+              <svg className="w-6 h-6 text-pink-500 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
+              </svg>
+            ) : (
+              //before saving
+              <svg
+                className="w-6 h-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24">
+                <path d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
+              </svg>
+            )}
+          </button>
+          {pageMode === "edit" && (
+            <div>
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => handleEdit()}
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm hover:text-accent-foreground rounded-md w-8 h-8 p-0 text-red-500 bg-red-50 hover:bg-red-300 m-1">
+                  <svg className="w-6 h-6 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
+                    />
+                  </svg>
+                </button>
+              )}
+              {/* Delete Button - Only for Admins */}
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => handleDelete()}
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm hover:text-accent-foreground rounded-md w-8 h-8 p-0 text-red-500 bg-red-50 hover:bg-red-300 m-1">
+                  <svg className="w-6 h-6 text-red" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      fillRule="evenodd"
+                      d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <a className="font-bold text-lg hover:underline" onClick={() => navigate(`/detail/${data.retreat_id}`)}>
+            View Details
+          </a>
+        </div>
+      </div>
+      <div className="p-5">
+        <div className="flex items-center text-emerald-700 mb-2">
           <svg
-            className="w-6 h-6 text-pink-500 fill-current"
             xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
-          >
-            <path d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
-          </svg>
-        ) : (
-          //before saving
-          <svg
-            className="w-6 h-6"
-            xmlns="http://www.w3.org/2000/svg"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
+            className="lucide lucide-map-pin mr-1">
+            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+            <circle cx="12" cy="10" r="3"></circle>
           </svg>
-        )}
-      </button>
-        {isAdmin && (
-          <button
-            type="button"
-            onClick={() => handleEdit()}
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm hover:text-accent-foreground rounded-md w-8 h-8 p-0 text-red-500 bg-red-50 hover:bg-red-300 m-1">
-            <svg className="w-6 h-6 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
-              />
-            </svg>
-          </button>
-        )}
-
-        {/* Delete Button - Only for Admins */}
-        {isAdmin && (
-          <button
-            type="button"
-            onClick={() => handleDelete()}
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm hover:text-accent-foreground rounded-md w-8 h-8 p-0 text-red-500 bg-red-50 hover:bg-red-300 m-1">
-            <svg className="w-6 h-6 text-red" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                fillRule="evenodd"
-                d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-        )}
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-        <a className="font-bold text-lg hover:underline" href="/retreat/1">
-          View Details
-        </a>
-      </div>
-    </div>
-    <div className="p-5">
-      <div className="flex items-center text-emerald-700 mb-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="lucide lucide-map-pin mr-1">
-          <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg>
-        <span className="text-sm">{data.retreat_location}</span>
-      </div>
-      <h3 className="text-xl font-bold mb-2 group-hover:text-emerald-600 transition-colors">{data.retreat_name}</h3>
-      <div className="flex flex-wrap gap-2 mb-3">
-        <span className="text-sm leading-5 bg-green-100 text-green-800 rounded-full p-2 font-semibold">{data.retreat_category}</span>
-      </div>
-      <div className="flex justify-between items-center">
-        <div>
-          <span className="text-xl font-bold text-gray-900">${data.retreat_price}</span>
+          <span className="text-sm">{data.retreat_location}</span>
         </div>
-        <a className="btn-outline text-sm py-1.5 px-4" href="/retreat/1">
-          View Details
-        </a>
+        <h3 className="text-xl font-bold mb-2 group-hover:text-emerald-600 transition-colors">{data.retreat_name}</h3>
+        <div className="flex flex-wrap gap-2 mb-3">
+          <span className="text-sm leading-5 bg-green-100 text-green-800 rounded-full p-2 font-semibold">{data.retreat_category}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <div>
+            <span className="text-lg font-bold text-gray-900">Rp.{data.retreat_price}</span>
+          </div>
+          <a className="btn-outline text-sm py-1.5 px-4" onClick={() => navigate(`/detail/${data.retreat_id}`)}>
+            View Details
+          </a>
+        </div>
       </div>
     </div>
-  </div>);
+  );
 };
-export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retreatFetch = ShowUserRetreats }) => {
+export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retreatFetch = ShowUserRetreats, mode = "show" }) => {
   const [cardData, setCardData] = useState([]);
   const [searchData, setSearchData] = useState({
     name: "",
@@ -166,10 +167,11 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
     category: "",
     minPrice: "",
     maxPrice: "",
+    priceRange: ""
   });
   const getRetreats = async () => {
     const response = await retreatFetch();
-    console.log("Nemo");
+    console.log("Sign");
     if (response && response.length > 0) {
       console.log(response);
       const formattedData = response.map((retreat) => ({
@@ -177,7 +179,7 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
         retreat_location: retreat.location,
         retreat_name: retreat.name,
         retreat_category: retreat.category.name,
-        retreat_price: retreat.price_usd,
+        retreat_price: retreat.price_idr,
         retreat_cover: retreat.images[0].image_url,
       }));
       setCardData(formattedData);
@@ -191,26 +193,22 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
     setSearchData({ ...searchData, [e.target.name]: e.target.value });
   };
   const handlePriceChange = (e) => {
-    const { name, value } = e.target;
-    const priceRanges = {
-      Low: { minPrice: 0, maxPrice: 999 },
-      Medium: { minPrice: 1000, maxPrice: 1500 },
-      High: { minPrice: 1501, maxPrice: 99999 },
-    };
-    if (name === "price") {
-      const range = priceRanges[value] || { minPrice: "", maxPrice: "" };
-      setSearchData((prev) => ({
-        ...prev,
-        minPrice: range.minPrice,
-        maxPrice: range.maxPrice,
-      }));
-    } else {
-      setSearchData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+  const { name, value } = e.target;
+  const priceRanges = {
+    Low: { minPrice: 0, maxPrice: 999 },
+    Medium: { minPrice: 1000, maxPrice: 1500 },
+    High: { minPrice: 1501, maxPrice: 99999 },
   };
+
+  const range = priceRanges[value] || { minPrice: "", maxPrice: "" };
+  setSearchData((prev) => ({
+    ...prev,
+    priceRange: value, // store selected range name
+    minPrice: range.minPrice,
+    maxPrice: range.maxPrice,
+  }));
+};
+
 
   const searchRetreats = async () => {
     const response = await ShowSearchedRetreats(searchData);
@@ -221,15 +219,14 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
         retreat_location: retreat.location,
         retreat_name: retreat.name,
         retreat_category: retreat.category.name,
-        retreat_price: retreat.price_usd,
+        retreat_price: retreat.price_idr,
         retreat_cover: retreat.images[0].image_url,
       }));
       setCardData(formattedData);
-    }
-    else {
+    } else {
       console.log("nothing");
       setCardData([]);
-    } 
+    }
   };
   return (
     <div>
@@ -238,8 +235,8 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
         <input
           type="text"
           name="name"
-          id = "name"
-          value = {searchData.name}
+          id="name"
+          value={searchData.name}
           onChange={handleChange}
           placeholder="Search retreats, activities, or locations..."
           className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
@@ -273,7 +270,7 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
             <select
               id="location"
               name="location"
-              defaultValue={""}
+              value={searchData.location}
               onChange={handleChange}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none">
               <option value="">All Locations</option>
@@ -297,7 +294,7 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
             <select
               id="category"
               name="category"
-              defaultValue={""}
+              value={searchData.category}
               onChange={handleChange}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none">
               <option value="">All Categories</option>
@@ -324,7 +321,7 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
             <select
               id="price"
               name="price"
-              defaultValue={""}
+              value={searchData.priceRange}
               onChange={handlePriceChange}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none">
               <option value="">All Prices</option>
@@ -341,13 +338,16 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
       <div className="flex justify-between items-center mb-8">
         <button
           className="text-sm text-gray-500 hover:underline"
-          onClick={() => {
-            setSearchTerm("");
-            setLocation("");
-            setCategory("");
-            setPriceRange("");
-            setIsFilterApplied(false);
-          }}>
+          onClick={() => 
+            setSearchData({
+              name: "",
+              location: "",
+              category: "",
+              minPrice: "",
+              maxPrice: "",
+              priceRange: ""
+            })
+          }>
           Clear all filters
         </button>
         <button
@@ -362,18 +362,11 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
         {cardData.length > 0 ? (
           cardData.map((data) => (
             <div key={data.retreat_id}>
-              <RetreatCard
-                setActiveMenu={setActiveMenu}
-                setSelectedRetreatId={setSelectedRetreatId}
-                data={data}
-                getRetreats={getRetreats}
-              />
+              <RetreatCard setActiveMenu={setActiveMenu} setSelectedRetreatId={setSelectedRetreatId} data={data} getRetreats={getRetreats} mode={mode}/>
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center text-gray-500 text-lg py-10">
-            🐾 Nothing found.
-          </div>
+          <div className="col-span-full text-center text-gray-500 text-lg py-10">🐾 Nothing found.</div>
         )}
       </div>
     </div>

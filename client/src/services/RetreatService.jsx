@@ -172,3 +172,77 @@ export const getSavedRetreats = async () => {
     return [];
   }
 };
+
+
+//FOR AI NEED
+export const getAiActivities = async (searchData) => {
+  const convertBudgetToIDR = (budget) => {
+    switch (budget) {
+      case "Low":
+        return 16000000; // $1000
+      case "Medium":
+        return 15000000; // $1000-15000
+      case "High":
+        return 24000000; // $1500
+      default:
+        return 16000000;
+    }
+  };
+
+  const requestBody = {
+    "Umur": 20,
+    "Jenis Kelamin": "Laki-laki",
+    "Kota": searchData.location || "Jakarta",
+    "Frekuensi": "Setiap tiga bulan",
+    "Anggaran/Kunjungan (IDR)": convertBudgetToIDR(searchData.budget),
+    "Kemauan Bepergian": "Domestik",
+    "Metode Pemesanan": "Website",
+    "Tujuan Utama": searchData.category || "Relaksasi",
+    "Yang Dicari": searchData.category || "Relaksasi",
+  };
+
+  try {
+    const res = await fetch("https://rifatmon-rfc-infinitelearning.hf.space/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.prediction) {
+      return data.prediction; // ✅ Just return the prediction string
+    } else {
+      console.error("AI response error:", data);
+      return null;
+    }
+  } catch (err) {
+    console.error("Network or server error:", err);
+    return null;
+  }
+};
+
+export const getRetreatsByActivity = async (activity) => {
+  const params = new URLSearchParams();
+  params.append("activity", activity);
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/retreats/by-activity?${params.toString()}`, {
+      method: "GET",
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      return data.retreats || [];
+    } else {
+      console.error("Error fetching retreats by activity:", data);
+      return [];
+    }
+  } catch (err) {
+    console.error("Network error while fetching retreats by activity:", err);
+    return [];
+  }
+};

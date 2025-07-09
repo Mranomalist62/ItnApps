@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ShowUserRetreats, ShowSearchedRetreats, handleDeleteRetreat, handleSaveRetreat, handleUnsaveRetreat } from "../services/RetreatService";
 
@@ -159,14 +160,18 @@ const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data , getRetreats})
   </div>);
 };
 export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retreatFetch = ShowUserRetreats }) => {
+  const url = useLocation();
+  const params = new URLSearchParams(url.search);
+  const initialLocation = params.get("location") || "";
   const [cardData, setCardData] = useState([]);
   const [searchData, setSearchData] = useState({
     name: "",
-    location: "",
+    location: initialLocation,
     category: "",
     minPrice: "",
     maxPrice: "",
   });
+
   const getRetreats = async () => {
     const response = await retreatFetch();
     console.log("Nemo");
@@ -184,7 +189,11 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
     }
   };
   useEffect(() => {
-    getRetreats();
+    if (initialLocation) {
+      searchRetreats(); // run filtered
+    } else {
+        getRetreats(); // load all
+    }
   }, []);
 
   const handleChange = (e) => {

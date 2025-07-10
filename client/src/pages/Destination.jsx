@@ -1,4 +1,4 @@
-    import React from "react";
+    import React, { useEffect } from "react";
     import { Link } from "react-router-dom";
     
     const destinations = [
@@ -45,6 +45,9 @@
     ];
 
     const DestinationsPage = () => {
+    useEffect(()=>{
+        document.title = "Destination";
+    });
     return (
         <div className="pt-24 pb-12 bg-gradient-to-b from-blue-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

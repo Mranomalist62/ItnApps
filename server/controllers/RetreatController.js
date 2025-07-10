@@ -126,7 +126,7 @@ const RetreatController = {
               ? {
                   price_idr: {
                     gte: parseFloat(minPrice) || 0,
-                    lte: parseFloat(maxPrice) || 99999,
+                    lte: parseFloat(maxPrice) || 1500000,
                   },
                 }
               : {},

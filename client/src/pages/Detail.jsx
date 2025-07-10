@@ -27,7 +27,7 @@ const DetailPage = () => {
       if (response?.hasItinerary && response?.items) {
         setHasItinerary(true);
         const items = Array.isArray(response.items) ? response.items : [response.items];
-        console.log(items)
+        console.log(items);
         setItineraryItem(
           items.map((item) => ({
             id: item.id,
@@ -51,6 +51,7 @@ const DetailPage = () => {
             retreat_category: response.category?.name || "",
             retreat_desc: response.description || "",
           });
+          document.title = response.name;
           setCurrentIndex(0);
 
           if (Array.isArray(response.images)) {
@@ -83,6 +84,14 @@ const DetailPage = () => {
       imageData.forEach((img) => URL.revokeObjectURL(img.preview));
     };
   }, [imageData]);
+  const formatToIDR = (amount) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? imageData.length - 1 : prev - 1));
   };
@@ -94,7 +103,7 @@ const DetailPage = () => {
   };
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-      <a className="inline-flex items-center text-emerald-600 hover:text-emerald-700 mb-8" onClick={() => navigate("/retreats")}>
+      <a className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8" onClick={() => navigate("/retreats")}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
@@ -169,7 +178,7 @@ const DetailPage = () => {
                   loading="lazy"
                   decoding="async"
                   data-nimg="fill"
-                  className={`object-cover ${currentIndex == index ? `border-2 border-green-400` : ``}`}
+                  className={`object-cover ${currentIndex == index ? `border-2 border-sky-700` : ``}`}
                   style={{ position: "absolute", height: "100%", width: "100%", inset: "0px", color: "transparent" }}
                   src={img.preview}></img>
               </button>
@@ -179,7 +188,7 @@ const DetailPage = () => {
         </div>
         <div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{retreatsData.retreat_name}</h1>
-          <div className="flex items-center text-emerald-700 mb-6">
+          <div className="flex items-center text-blue-700 mb-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -197,7 +206,7 @@ const DetailPage = () => {
             <span className="text-lg">{retreatsData.retreat_location}</span>
           </div>
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-emerald-50 shadow-sm p-3 rounded-lg text-center">
+            <div className="bg-blue-50 shadow-sm p-3 rounded-lg text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -208,30 +217,33 @@ const DetailPage = () => {
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                className="lucide lucide-tag mx-auto mb-1 text-emerald-600">
+                className="lucide lucide-tag mx-auto mb-1 text-blue-600">
                 <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path>
                 <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"></circle>
               </svg>
               <span className="block text-sm text-gray-500">Category</span>
               <span className="font-medium">{retreatsData.retreat_category}</span>
             </div>
-            <div className="bg-emerald-50 shadow-sm p-3 rounded-lg text-center">
+            <div className="bg-blue-50 shadow-sm p-3 rounded-lg text-center">
               <svg
+                class="w-6 h-6 lucide lucide-clock mx-auto mb-1 text-blue-600"
+                aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
+                width="24"
+                height="24"
                 fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                className="lucide lucide-clock mx-auto mb-1 text-emerald-600">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
+                viewBox="0 0 24 24">
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"
+                />
               </svg>
+
               <span className="block text-sm text-gray-500">Price</span>
-              <span className="font-medium">Rp{retreatsData.retreat_price}</span>
+              <span className="font-medium">{formatToIDR(retreatsData.retreat_price)}</span>
             </div>
           </div>
           <div className="mb-6">
@@ -243,7 +255,7 @@ const DetailPage = () => {
             <ul className="space-y-2">
               {activitiesData.map((activity, index) => (
                 <li className="flex items-start" key={index}>
-                  <span className="inline-flex items-center justify-center w-6 h-6 bg-emerald-100 text-emerald-800 rounded-full mr-3 flex-shrink-0 text-sm font-medium">
+                  <span className="inline-flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-800 rounded-full mr-3 flex-shrink-0 text-sm font-medium">
                     {index + 1}
                   </span>
                   <span>{activity.activity_name}</span>
@@ -256,11 +268,11 @@ const DetailPage = () => {
               hasItinerary ? setOpenModal2(true) : setOpenModal(true);
             }}
             type="button"
-            className="rounded-md bg-green-400 hover:bg-green-500 w-full py-3 text-center text-lg flex items-center justify-center">
+            className="rounded-md font-semibold bg-sky-400 hover:bg-sky-500 w-full py-3 text-center text-lg flex items-center justify-center">
             Add to Itinerary
           </button>
           <MakeItineraryMenu openModal={openModal} setOpenModal={setOpenModal} setOpenModal2={setOpenModal2} />
-          <InsertItineraryMenu openModal2={openModal2} setOpenModal2={setOpenModal2} itineraryItem={itineraryItem} retreat_id={retreat_id}/>
+          <InsertItineraryMenu openModal2={openModal2} setOpenModal2={setOpenModal2} itineraryItem={itineraryItem} retreat_id={retreat_id} />
         </div>
       </div>
     </div>
@@ -320,7 +332,7 @@ const InsertItineraryMenu = ({ openModal2, setOpenModal2, itineraryItem, retreat
   };
   const handleUpdate = async () => {
     if (!selectedItemId) return;
-    const result = await handleUpdateItineraryRetreat(selectedItemId, retreat_id); 
+    const result = await handleUpdateItineraryRetreat(selectedItemId, retreat_id);
     if (result?.item) {
       setOpenModal2(false);
     }
@@ -342,10 +354,7 @@ const InsertItineraryMenu = ({ openModal2, setOpenModal2, itineraryItem, retreat
                 onChange={() => setSelectedItemId(item.id)}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
-              <label
-                htmlFor={`radio-${item.id}`}
-                className={`w-full py-4 ms-2 text-sm font-medium ${isFilled ? "text-gray-500 line-through" : "text-black"}`}
-              >
+              <label htmlFor={`radio-${item.id}`} className={`w-full py-4 ms-2 text-sm font-medium ${isFilled ? "text-gray-500 line-through" : "text-black"}`}>
                 {`Day ${index + 1} - ${formatted(item.planned_date)}${isFilled && item.retreat_name ? ` ${item.retreat_name}` : ""}`}
               </label>
             </div>
@@ -353,9 +362,7 @@ const InsertItineraryMenu = ({ openModal2, setOpenModal2, itineraryItem, retreat
         })}
       </ModalBody>
       <ModalFooter>
-        <Button
-          disabled={!selectedItemId}
-          onClick={handleUpdate}>
+        <Button disabled={!selectedItemId} onClick={handleUpdate}>
           Accept
         </Button>
         <Button color="alternative" onClick={() => setOpenModal2(false)}>

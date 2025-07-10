@@ -2,8 +2,12 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShowUserRetreats, ShowSearchedRetreats, handleDeleteRetreat, handleSaveRetreat, handleUnsaveRetreat } from "../services/RetreatService";
+import { useMemo } from "react";
 
 const Retreat = () => {
+  useEffect(()=>{
+    document.title = "Retreats";
+  })
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
       {/* Title */}
@@ -18,6 +22,15 @@ const Retreat = () => {
 
 const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data, getRetreats, mode = "show" }) => {
   const [isSaved, setIsSaved] = useState(false);
+  const formatToIDR = (amount) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  }
+
   const navigate = useNavigate();
   const handleSaved = async () => {
     const success = await handleSaveRetreat(data.retreat_id);
@@ -58,7 +71,7 @@ const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data, getRetreats, m
           style={{ position: "absolute", height: "100%", width: "100%", inset: "0px", color: "transparent" }}
           src={"http://localhost:5000/api/retreats/image/" + data.retreat_cover}></img>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        {/* <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10">Featured</div> */}
+        {/* <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10">Featured</div> */}
         <div className="flex gap-1 absolute top-0 right-0">
           <button
             type="button"
@@ -127,7 +140,7 @@ const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data, getRetreats, m
         </div>
       </div>
       <div className="p-5">
-        <div className="flex items-center text-emerald-700 mb-2">
+        <div className="flex items-center text-blue-700 mb-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -144,13 +157,13 @@ const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data, getRetreats, m
           </svg>
           <span className="text-sm">{data.retreat_location}</span>
         </div>
-        <h3 className="text-xl font-bold mb-2 group-hover:text-emerald-600 transition-colors">{data.retreat_name}</h3>
+        <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">{data.retreat_name}</h3>
         <div className="flex flex-wrap gap-2 mb-3">
           <span className="text-sm leading-5 bg-green-100 text-green-800 rounded-full p-2 font-semibold">{data.retreat_category}</span>
         </div>
         <div className="flex justify-between items-center">
           <div>
-            <span className="text-lg font-bold text-gray-900">Rp.{data.retreat_price}</span>
+            <span className="text-lg font-bold text-gray-900">{formatToIDR(data.retreat_price)}</span>
           </div>
           <a className="btn-outline text-sm py-1.5 px-4" onClick={() => navigate(`/detail/${data.retreat_id}`)}>
             View Details
@@ -160,20 +173,31 @@ const RetreatCard = ({ setActiveMenu, setSelectedRetreatId, data, getRetreats, m
     </div>
   );
 };
+
 export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retreatFetch = ShowUserRetreats, mode = "show" }) => {
   const url = useLocation();
   const params = new URLSearchParams(url.search);
   const initialLocation = params.get("location") || "";
+  const initialCategory = params.get("category") || "";
+  const categoryMap = {
+    Relaxation: "1",
+    Health: "2",
+    Spiritual: "3",
+    Beauty: "4",
+    Detox: "5"
+  };
+  const categoryValue = useMemo(() => {
+    return initialCategory && categoryMap[initialCategory] ? categoryMap[initialCategory] : "";
+  }, [initialCategory]);
   const [cardData, setCardData] = useState([]);
   const [searchData, setSearchData] = useState({
     name: "",
     location: initialLocation,
-    category: "",
+    category: categoryValue,
     minPrice: "",
     maxPrice: "",
     priceRange: ""
   });
-
   const getRetreats = async () => {
     const response = await retreatFetch();
     console.log("Sign");
@@ -204,9 +228,9 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
   const handlePriceChange = (e) => {
   const { name, value } = e.target;
   const priceRanges = {
-    Low: { minPrice: 0, maxPrice: 999 },
-    Medium: { minPrice: 1000, maxPrice: 1500 },
-    High: { minPrice: 1501, maxPrice: 99999 },
+    Low: { minPrice: 0, maxPrice: 149999 },
+    Medium: { minPrice: 150001, maxPrice: 700000 },
+    High: { minPrice: 700001, maxPrice: 1500000 },
   };
 
   const range = priceRanges[value] || { minPrice: "", maxPrice: "" };
@@ -248,7 +272,7 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
           value={searchData.name}
           onChange={handleChange}
           placeholder="Search retreats, activities, or locations..."
-          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <svg
@@ -281,7 +305,7 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
               name="location"
               value={searchData.location}
               onChange={handleChange}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none">
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
               <option value="">All Locations</option>
               <option value="Bali">Bali</option>
               <option value="Yogyakarta">Yogyakarta</option>
@@ -304,7 +328,8 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
               name="category"
               value={searchData.category}
               onChange={handleChange}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none">
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                <option value="">All Location</option>
                 <option value="1">Relaxation</option>
                 <option value="2">Health</option>
                 <option value="3">Spiritual</option>
@@ -326,11 +351,11 @@ export const FilterSearchRetreat = ({ setActiveMenu, setSelectedRetreatId, retre
               name="price"
               value={searchData.priceRange}
               onChange={handlePriceChange}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 appearance-none">
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
               <option value="">All Prices</option>
-              <option value="Low">Low (Under $1000)</option>
-              <option value="Medium">Medium ($1000-$1500)</option>
-              <option value="High">High (Above $1500)</option>
+              <option value="Low">Low (Under RP 150.000)</option>
+              <option value="Medium">Medium (RP 150.000-Rp 700.000)</option>
+              <option value="High">High (Above Rp 700.000)</option>
             </select>
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">💵</div>
           </div>

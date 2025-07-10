@@ -179,13 +179,13 @@ export const getAiActivities = async (searchData) => {
   const convertBudgetToIDR = (budget) => {
     switch (budget) {
       case "Low":
-        return 16000000; // $1000
+        return 149999; // $1000
       case "Medium":
-        return 15000000; // $1000-15000
+        return 700000; // $1000-15000
       case "High":
-        return 24000000; // $1500
+        return 1500000; // $1500
       default:
-        return 16000000;
+        return 700000;
     }
   };
 
@@ -193,7 +193,7 @@ export const getAiActivities = async (searchData) => {
     "Umur": 20,
     "Jenis Kelamin": "Laki-laki",
     "Kota": searchData.location || "Jakarta",
-    "Frekuensi": "Setiap tiga bulan",
+    "Frekuensi": "Sekali sebulan",
     "Anggaran/Kunjungan (IDR)": convertBudgetToIDR(searchData.budget),
     "Kemauan Bepergian": "Domestik",
     "Metode Pemesanan": "Website",

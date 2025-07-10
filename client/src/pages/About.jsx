@@ -1,6 +1,10 @@
 import { MapPin, Mail, Phone, ArrowRight, Instagram, Twitter, Linkedin } from "lucide-react";
+import { useEffect } from "react";
 
 export default function AboutPage() {
+  useEffect(()=>{
+    document.title = "About";
+  });
   const teamMembers = [
     {
       id: 1,

@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { handleRegister } from "../services/AuthService";
 import { Link, useNavigate } from "react-router-dom";
 import { FaAlignLeft, FaAlignRight, FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 
 const Register = () => {
+  useEffect(()=>{
+    document.title = "Login";
+  })
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",

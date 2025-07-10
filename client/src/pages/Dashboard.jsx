@@ -18,6 +18,7 @@ const Dashboard = ({ setIsLoggedIn }) => {
   });
   const navigate = useNavigate();
   useEffect(() => {
+    document.title = "Profile";
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
@@ -66,7 +67,7 @@ const Dashboard = ({ setIsLoggedIn }) => {
               <NavItem icon="⚙️" label="Settings" active={activeMenu === "Settings"} onClick={() => setActiveMenu("Settings")} />
             </ul>
             <ul className="space-y-2 pt-2 border-t border-gray-500">
-              <NavItem icon="🌋" label="Sign Out" active={activeMenu === "Sign Out"} onClick={() => handleLogout(setIsLoggedIn, navigate)} />
+              <NavItem icon="❌" label="Sign Out" active={activeMenu === "Sign Out"} onClick={() => handleLogout(setIsLoggedIn, navigate)} />
             </ul>
           </section>
         </div>

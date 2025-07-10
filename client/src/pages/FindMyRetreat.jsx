@@ -3,7 +3,8 @@ import { ArrowRight, Check, ChevronLeft } from "react-feather";
 import { getRetreatsByActivity, getAiActivities } from "../services/RetreatService";
 import { useNavigate } from "react-router-dom";
 
-const RetreatCard = ({ retreat }) => {
+const RetreatCard = ({ retreat, navigate }) => {
+  
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-[1.02]">
       <img src={retreat.image} alt={retreat.title} className="w-full h-48 object-cover" />
@@ -18,7 +19,7 @@ const RetreatCard = ({ retreat }) => {
           <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded">{retreat.location}</span>
           <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded"></span>
         </div>
-        <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">View Details</button>
+        <button onClick={()=>navigate(`/detail/${retreat.id}`)} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">View Details</button>
       </div>
     </div>
   );
@@ -36,20 +37,6 @@ const FindMyRetreat = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [allRetreats, setAllRetreats] = useState([]);
-
-  // Load retreat data on component mount
-  useEffect(() => {
-    const loadRetreats = async () => {
-      try {
-        const data = await RetreatService.getRetreats();
-        setAllRetreats(data);
-      } catch (error) {
-        console.error("Error loading retreats:", error);
-      }
-    };
-    loadRetreats();
-  }, []);
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
@@ -288,7 +275,7 @@ const FindMyRetreat = () => {
                     <span className="text-indigo-600 font-bold text-xl">{budget === "Low" ? "$" : budget === "Medium" ? "$$" : "$$$"}</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3">{budget === "Low" ? "Budget-Friendly" : budget === "Medium" ? "Mid-Range" : "Luxury"}</h3>
-                  <p className="text-gray-600">{budget === "Low" ? "Under $1,000" : budget === "Medium" ? "$1,000 - $1,500" : "Above $1,500"}</p>
+                  <p className="text-gray-600">{budget === "Low" ? "Under RP 150.000" : budget === "Medium" ? "RP 150.000-Rp 700.000" : "Above Rp 700.000"}</p>
                   <p className="text-sm text-gray-500 mt-2">
                     {budget === "Low"
                       ? "Perfect for travelers on a budget"
@@ -411,6 +398,7 @@ const FindMyRetreat = () => {
                     <RetreatCard
                       key={retreat.id}
                       retreat={{
+                        id: retreat.id,
                         title: retreat.name,
                         description: retreat.description,
                         price: `Rp${retreat.price_idr}`,
@@ -419,19 +407,12 @@ const FindMyRetreat = () => {
                         category: retreat.category?.name,
                         location: retreat.location,
                       }}
+                      navigate={navigate}
                     />
                   ))
                 ) : (
                   <div className="col-span-3 text-center py-12">
                     <h3 className="text-xl font-bold mb-2">No retreats match your criteria</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                      {allRetreats
-                        .filter((retreat) => retreat.featured)
-                        .slice(0, 3)
-                        .map((retreat) => (
-                          <RetreatCard key={retreat.id} retreat={retreat} />
-                        ))}
-                    </div>
                   </div>
                 )}
               </div>

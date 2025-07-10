@@ -22,6 +22,7 @@ const AdminDashboard = ({ setIsLoggedIn }) => {
     profile_picture: "",
   });
   useEffect(() => {
+    document.title = "Admin Dashboard";
     if (storedUser) {
       if (parsedUser.role !== "admin") {
         navigate("/profile");
@@ -78,7 +79,7 @@ const AdminDashboard = ({ setIsLoggedIn }) => {
               <NavItem icon="⚙️" label="Settings" active={activeMenu === "Settings"} onClick={() => setActiveMenu("Settings")} />
             </ul>
             <ul className="space-y-2 pt-2 border-t border-gray-500">
-              <NavItem icon="🌋" label="Sign Out" active={activeMenu === "Sign Out"} onClick={() => handleLogout(setIsLoggedIn, navigate)} />
+              <NavItem icon="❌" label="Sign Out" active={activeMenu === "Sign Out"} onClick={() => handleLogout(setIsLoggedIn, navigate)} />
             </ul>
           </section>
         </div>
@@ -182,7 +183,7 @@ const SettingMenu = ({ userData }) => {
                   </label>
                   <input
                     id="firstName"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 "
                     type="text"
                     name="first_name"
                     onChange={handleChange}
@@ -194,7 +195,7 @@ const SettingMenu = ({ userData }) => {
                   </label>
                   <input
                     id="lastName"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 "
                     type="text"
                     name="last_name"
                     onChange={handleChange}
@@ -207,7 +208,7 @@ const SettingMenu = ({ userData }) => {
                 </label>
                 <input
                   id="email"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2  bg-gray-200"
                   type="email"
                   name="email"
                   onChange={handleChange}
@@ -220,7 +221,7 @@ const SettingMenu = ({ userData }) => {
                 </label>
                 <input
                   id="phone"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 "
                   type="tel"
                   name="phone_number"
                   onChange={handleChange}
@@ -232,7 +233,7 @@ const SettingMenu = ({ userData }) => {
                 </label>
                 <input
                   id="location"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 "
                   type="text"
                   name="location"
                   onChange={handleChange}
@@ -256,7 +257,7 @@ const DashboardMenu = () => {
     <div className="md:col-span-3">
       <div className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-wellness-sage/20">
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-gray-300">
             <div className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="tracking-tight text-sm font-medium text-wellness-sage">Total Retreats</div>
               <svg
@@ -278,7 +279,7 @@ const DashboardMenu = () => {
               <div className="text-2xl font-bold text-wellness-forest">247</div>
             </div>
           </div>
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-wellness-sage/20">
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-gray-300">
             <div className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="tracking-tight text-sm font-medium text-wellness-sage">Total Users</div>
               <svg
@@ -302,7 +303,7 @@ const DashboardMenu = () => {
               <div className="text-2xl font-bold text-wellness-forest">1,429</div>
             </div>
           </div>
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-wellness-sage/20">
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-gray-300">
             <div className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="tracking-tight text-sm font-medium text-wellness-sage">Itinerary Ever Added</div>
               <svg
@@ -328,7 +329,7 @@ const DashboardMenu = () => {
           </div>
         </div>
         <div className="grid gap-6">
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-wellness-sage/20">
+          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-gray-300">
             <div className="flex flex-col space-y-1.5 p-6">
               <div className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2 text-wellness-forest">
                 <svg
@@ -590,7 +591,7 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                 </label>
                 <input
                   id="email"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   type="text"
                   name="retreat_name"
                   value={retreatsData.retreat_name}
@@ -604,7 +605,7 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                   </label>
                   <input
                     id="firstName"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     type="text"
                     name="retreat_location"
                     value={retreatsData.retreat_location}
@@ -622,7 +623,7 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                     <input
                       type="text"
                       name="retreat_price"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-r-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       value={retreatsData.retreat_price}
                       onChange={handleRetreatChange}
                       required></input>
@@ -639,7 +640,7 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                   defaultValue={""}
                   name="retreat_category"
                   value={retreatsData.retreat_category}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 ">
                   <option value="">All Category</option>
                   <option value="1">Relaxation</option>   
                   <option value="2">Health</option>
@@ -654,7 +655,7 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                 </label>
                 <textarea
                   id="location"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 "
                   type="text"
                   name="retreat_desc"
                   value={retreatsData.retreat_desc}
@@ -667,20 +668,20 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                 <h4 className="font-medium text-wellness-forest mb-3">Add New Activity</h4>
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                   <input
-                    className="flex h-10 w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm border-wellness-sage/20"
+                    className="flex h-10 w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm border-gray-300"
                     type="time"
                     name="activity_time"
                     onChange={handleActivityChange}
                     value={currentActivity.activity_time}></input>
                   <input
-                    className="flex h-10 w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm border-wellness-sage/20"
+                    className="flex h-10 w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm border-gray-300"
                     placeholder="Activity title"
                     type="text"
                     name="activity_name"
                     onChange={handleActivityChange}
                     value={currentActivity.activity_name}></input>
                   <input
-                    className="flex h-10 w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm border-wellness-sage/20"
+                    className="flex h-10 w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm border-gray-300"
                     placeholder="Location"
                     type="text"
                     name="activity_location"
@@ -690,7 +691,7 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
                 <div className="mt-3">
                   <textarea
                     onChange={handleActivityChange}
-                    className="flex min-h-[80px] w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm border-wellness-sage/20"
+                    className="flex min-h-[80px] w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm border-gray-300"
                     placeholder="Activity description"
                     name="activity_desc"
                     value={currentActivity.activity_desc}></textarea>

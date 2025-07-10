@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { handleLogin } from "../services/AuthService";
@@ -6,6 +6,9 @@ import { handleLogin } from "../services/AuthService";
 // import { FaGithub } from 'react-icons/fa';
 
 const Login = ({ setIsLoggedIn }) => {
+  useEffect(()=>{
+    document.title = "Login";
+  })
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -84,12 +87,12 @@ const Login = ({ setIsLoggedIn }) => {
             </div>
 
             <div>
-              <div className="flex justify-between items-center">
+              {/* <div className="flex justify-between items-center">
                 <label className="text-sm font-medium text-gray-700">Password</label>
                 <Link to="/forgot-password" className="text-sm text-green-600 hover:underline">
                   Forgot password?
                 </Link>
-              </div>
+              </div> */}
               <div className="flex items-center border rounded-md px-3 mt-1">
                 <FaLock className="text-gray-400" />
                 <input

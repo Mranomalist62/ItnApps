@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleLogout } from "../services/AuthService";
-import { handleUpdateProfile } from "../services/UserService";
+import { handleDashboardStats, handleUpdateProfile } from "../services/UserService";
 import { handleAddRetreat, handleEditRetreat, ShowRetreatsById } from "../services/RetreatService";
 import { FilterSearchRetreat } from "./Retreat";
 import { ShowAllRetreats } from "../services/RetreatService";
@@ -253,10 +253,21 @@ const SettingMenu = ({ userData }) => {
 };
 
 const DashboardMenu = () => {
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalRetreats: 0,
+  });
+  useEffect(() => {
+    const getStats = async () => {
+      const data = await handleDashboardStats();
+      setStats(data);
+    };
+    getStats();
+  }, []);
   return (
     <div className="md:col-span-3">
       <div className="space-y-6">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
           <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-gray-300">
             <div className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="tracking-tight text-sm font-medium text-wellness-sage">Total Retreats</div>
@@ -276,7 +287,7 @@ const DashboardMenu = () => {
               </svg>
             </div>
             <div className="p-6 pt-0">
-              <div className="text-2xl font-bold text-wellness-forest">247</div>
+              <div className="text-2xl font-bold text-wellness-forest">{stats.totalRetreats}</div>
             </div>
           </div>
           <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-gray-300">
@@ -300,31 +311,7 @@ const DashboardMenu = () => {
               </svg>
             </div>
             <div className="p-6 pt-0">
-              <div className="text-2xl font-bold text-wellness-forest">1,429</div>
-            </div>
-          </div>
-          <div className="rounded-lg border bg-card text-card-foreground shadow-sm border-gray-300">
-            <div className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="tracking-tight text-sm font-medium text-wellness-sage">Itinerary Ever Added</div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-calendar h-4 w-4 text-wellness-forest">
-                <path d="M8 2v4"></path>
-                <path d="M16 2v4"></path>
-                <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                <path d="M3 10h18"></path>
-              </svg>
-            </div>
-            <div className="p-6 pt-0">
-              <div className="text-2xl font-bold text-wellness-forest">89</div>
+              <div className="text-2xl font-bold text-wellness-forest">{stats.totalUsers.toLocaleString()}</div>
             </div>
           </div>
         </div>
@@ -538,10 +525,10 @@ const RetreatForm = ({ setActiveMenu, selectedRetreatId = null }) => {
         <h2 className="text-2xl font-display font-bold mb-4">Retreats Form</h2>
         <button
           onClick={() => setActiveMenu("Manage Retreats")}
-          class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-8 mb-4 text-black"
+          className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-8 mb-4 text-black"
           type="button">
-          <svg class="w-6 h-6 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4" />
+          <svg className="w-6 h-6 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M5 12l4-4m-4 4 4 4" />
           </svg>
           Back to Manage
         </button>

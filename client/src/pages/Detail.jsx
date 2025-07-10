@@ -21,60 +21,58 @@ const DetailPage = () => {
     retreat_desc: "",
   });
   const [activitiesData, setActivitiesData] = useState([]);
-  useEffect(() => {
-    const checkUserItinerary = async () => {
-      const response = await handleCheckItinerary();
-      if (response?.hasItinerary && response?.items) {
-        setHasItinerary(true);
-        const items = Array.isArray(response.items) ? response.items : [response.items];
-        console.log(items);
-        setItineraryItem(
-          items.map((item) => ({
-            id: item.id,
-            retreat_name: item.retreat != null ? item.retreat.name : "",
-            itinerary_Id: item.itinerary_Id,
-            retreat_id: item.retreat_id,
-            planned_date: item.planned_date,
-          }))
-        );
-      }
-    };
+  const checkUserItinerary = async () => {
+    const response = await handleCheckItinerary();
+    if (response?.hasItinerary && response?.items) {
+      setHasItinerary(true);
+      const items = Array.isArray(response.items) ? response.items : [response.items];
+      console.log(items);
+      setItineraryItem(
+        items.map((item) => ({
+          id: item.id,
+          retreat_name: item.retreat != null ? item.retreat.name : "",
+          itinerary_Id: item.itinerary_Id,
+          retreat_id: item.retreat_id,
+          planned_date: item.planned_date,
+        }))
+      );
+    }
+  };
+  const fetchRetreatDetails = async () => {
+    try {
+      const response = await ShowRetreatsById(retreat_id);
+      if (response) {
+        setRetreatsData({
+          retreat_name: response.name || "",
+          retreat_location: response.location || "",
+          retreat_price: response.price_idr || "",
+          retreat_category: response.category?.name || "",
+          retreat_desc: response.description || "",
+        });
+        document.title = response.name;
+        setCurrentIndex(0);
 
-    const fetchRetreatDetails = async () => {
-      try {
-        const response = await ShowRetreatsById(retreat_id);
-        if (response) {
-          setRetreatsData({
-            retreat_name: response.name || "",
-            retreat_location: response.location || "",
-            retreat_price: response.price_idr || "",
-            retreat_category: response.category?.name || "",
-            retreat_desc: response.description || "",
-          });
-          document.title = response.name;
-          setCurrentIndex(0);
-
-          if (Array.isArray(response.images)) {
-            const loadedImages = response.images.map((img) => ({
-              imageName: img.image_url,
-              imageFile: null,
-              preview: `http://localhost:5000/api/retreats/image/${img.image_url}`,
-            }));
-            setImageData(loadedImages);
-          }
-
-          if (Array.isArray(response.activities)) {
-            const formattedActivities = response.activities.map((a) => ({
-              activity_name: a.title || "",
-            }));
-            setActivitiesData(formattedActivities);
-          }
+        if (Array.isArray(response.images)) {
+          const loadedImages = response.images.map((img) => ({
+            imageName: img.image_url,
+            imageFile: null,
+            preview: `http://localhost:5000/api/retreats/image/${img.image_url}`,
+          }));
+          setImageData(loadedImages);
         }
-      } catch (err) {
-        console.error("Error loading retreat:", err);
-      }
-    };
 
+        if (Array.isArray(response.activities)) {
+          const formattedActivities = response.activities.map((a) => ({
+            activity_name: a.title || "",
+          }));
+          setActivitiesData(formattedActivities);
+        }
+      }
+    } catch (err) {
+      console.error("Error loading retreat:", err);
+    }
+  };
+  useEffect(() => {
     checkUserItinerary();
     fetchRetreatDetails();
   }, []);
@@ -111,9 +109,9 @@ const DetailPage = () => {
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           className="lucide lucide-chevron-left">
           <path d="m15 18-6-6 6-6"></path>
         </svg>
@@ -142,9 +140,9 @@ const DetailPage = () => {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="lucide lucide-chevron-left">
                 <path d="m15 18-6-6 6-6"></path>
               </svg>
@@ -161,9 +159,9 @@ const DetailPage = () => {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="lucide lucide-chevron-right">
                 <path d="m9 18 6-6-6-6"></path>
               </svg>
@@ -196,9 +194,9 @@ const DetailPage = () => {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="lucide lucide-map-pin mr-2">
               <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
               <circle cx="12" cy="10" r="3"></circle>
@@ -214,9 +212,9 @@ const DetailPage = () => {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="lucide lucide-tag mx-auto mb-1 text-blue-600">
                 <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path>
                 <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"></circle>
@@ -226,7 +224,7 @@ const DetailPage = () => {
             </div>
             <div className="bg-blue-50 shadow-sm p-3 rounded-lg text-center">
               <svg
-                class="w-6 h-6 lucide lucide-clock mx-auto mb-1 text-blue-600"
+                className="w-6 h-6 lucide lucide-clock mx-auto mb-1 text-blue-600"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -235,9 +233,9 @@ const DetailPage = () => {
                 viewBox="0 0 24 24">
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"
                 />
               </svg>
@@ -271,15 +269,21 @@ const DetailPage = () => {
             className="rounded-md font-semibold bg-sky-400 hover:bg-sky-500 w-full py-3 text-center text-lg flex items-center justify-center">
             Add to Itinerary
           </button>
-          <MakeItineraryMenu openModal={openModal} setOpenModal={setOpenModal} setOpenModal2={setOpenModal2} />
-          <InsertItineraryMenu openModal2={openModal2} setOpenModal2={setOpenModal2} itineraryItem={itineraryItem} retreat_id={retreat_id} />
+          <MakeItineraryMenu
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+            setOpenModal2={setOpenModal2}
+            setHasItinerary={setHasItinerary}
+            checkUserItinerary={checkUserItinerary}
+          />
+          <InsertItineraryMenu openModal2={openModal2} setOpenModal2={setOpenModal2} itineraryItem={itineraryItem} retreat_id={retreat_id} checkUserItinerary={checkUserItinerary}/>
         </div>
       </div>
     </div>
   );
 };
 
-const MakeItineraryMenu = ({ openModal, setOpenModal, setOpenModal2 }) => {
+export const MakeItineraryMenu = ({ openModal, setOpenModal, setOpenModal2 = null, setHasItinerary = false, checkUserItinerary = null }) => {
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -287,8 +291,14 @@ const MakeItineraryMenu = ({ openModal, setOpenModal, setOpenModal2 }) => {
   const handleSubmit = async () => {
     const response = await handleCreateItinerary(dateRange);
     if (response === true) {
-      setOpenModal(false);
-      setOpenModal2(true);
+      setHasItinerary(true);
+      checkUserItinerary()
+      setTimeout(() => {
+        setOpenModal(false);
+        if (setOpenModal2) {
+          setOpenModal2(true);
+        }
+      }, 1000);
     }
   };
   return (
@@ -308,7 +318,16 @@ const MakeItineraryMenu = ({ openModal, setOpenModal, setOpenModal2 }) => {
             }}
           />
           <span className="mx-4 text-gray-500">until</span>
-          <Datepicker className="sm:mt-4 md:mt-0" value={dateRange.endDate} onChange={(date) => setDateRange({ endDate: date })} />
+          <Datepicker
+            className="sm:mt-4 md:mt-0"
+            value={dateRange.endDate}
+            onChange={(date) =>
+              setDateRange((prev) => ({
+                ...prev,
+                endDate: date,
+              }))
+            }
+          />
         </div>
         <button type="button" className="mt-4" onClick={() => setDateRange({ startDate: new Date(), endDate: new Date() })}>
           Reset Date
@@ -324,7 +343,7 @@ const MakeItineraryMenu = ({ openModal, setOpenModal, setOpenModal2 }) => {
   );
 };
 
-const InsertItineraryMenu = ({ openModal2, setOpenModal2, itineraryItem, retreat_id }) => {
+const InsertItineraryMenu = ({ openModal2, setOpenModal2, itineraryItem, retreat_id, checkUserItinerary }) => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const formatted = (planned_date) => {
     const date = new Date(planned_date);
@@ -334,34 +353,35 @@ const InsertItineraryMenu = ({ openModal2, setOpenModal2, itineraryItem, retreat
     if (!selectedItemId) return;
     const result = await handleUpdateItineraryRetreat(selectedItemId, retreat_id);
     if (result?.item) {
+      checkUserItinerary();
       setOpenModal2(false);
     }
   };
   return (
     <Modal dismissible show={openModal2} onClose={() => setOpenModal2(false)}>
       <ModalHeader>Choose Itinerary Date</ModalHeader>
-      <ModalBody className="overflow-visible">
+      <ModalBody className="overflow-visible p-4">
         {itineraryItem.map((item, index) => {
-          const isFilled = item.retreat_id !== null && item.retreat_id !== "";
+          const isSame = item.retreat_id == retreat_id;
           return (
-            <div key={item.id} className="flex my-2 items-center ps-4 border border-gray-200 rounded-sm dark:border-gray-700">
+            <div key={item.id} className="flex my-1 items-center ps-4 border border-gray-200 rounded-sm dark:border-gray-700">
               <input
                 id={`radio-${item.id}`}
                 type="radio"
                 value={item.id}
                 name="bordered-radio"
-                disabled={isFilled}
+                disabled={isSame}
                 onChange={() => setSelectedItemId(item.id)}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
-              <label htmlFor={`radio-${item.id}`} className={`w-full py-4 ms-2 text-sm font-medium ${isFilled ? "text-gray-500 line-through" : "text-black"}`}>
-                {`Day ${index + 1} - ${formatted(item.planned_date)}${isFilled && item.retreat_name ? ` ${item.retreat_name}` : ""}`}
+              <label htmlFor={`radio-${item.id}`} className={`w-full py-3 ms-2 text-sm font-medium ${isSame ? "text-gray-500 line-through" : "text-black"}`}>
+                {`Day ${index + 1} - ${formatted(item.planned_date)} ${item.retreat_name && ` (${item.retreat_name})`}`}
               </label>
             </div>
           );
         })}
       </ModalBody>
-      <ModalFooter>
+      <ModalFooter className=" p-4">
         <Button disabled={!selectedItemId} onClick={handleUpdate}>
           Accept
         </Button>

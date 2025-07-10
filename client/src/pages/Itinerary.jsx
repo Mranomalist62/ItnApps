@@ -1,8 +1,12 @@
 import { Accordion, AccordionContent, AccordionPanel, AccordionTitle } from "flowbite-react";
 import { useState, useEffect } from "react";
-import { handleCheckItinerary } from "../services/ItineraryService";
+import { handleCheckItinerary, handleDeleteItinerary } from "../services/ItineraryService";
+import { MakeItineraryMenu } from "./Detail";
+import { useNavigate } from "react-router-dom";
 
 const ItineraryMenu = () => {
+  const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState(false);
   const [hasItinerary, setHasItinerary] = useState(false);
   const [itineraryItem, setItineraryItem] = useState([]);
   const formatted = (planned_date) => {
@@ -11,7 +15,6 @@ const ItineraryMenu = () => {
   };
   const checkUserItinerary = async () => {
     const response = await handleCheckItinerary();
-    console.log(response);
     if (response?.hasItinerary && response?.items) {
       setHasItinerary(true);
       const items = Array.isArray(response.items) ? response.items : [response.items];
@@ -31,12 +34,13 @@ const ItineraryMenu = () => {
   useEffect(() => {
     checkUserItinerary();
   }, []);
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
     const confirmed = window.confirm("Are you sure you want to delete this itinerary?");
     if (confirmed) {
-      const success = await handleDeleteItinerary(id);
+      const success = await handleDeleteItinerary(itineraryItem[0].itinerary_Id);
       if (success) {
-        checkUserItinerary();
+        setHasItinerary(false);
+        setItineraryItem([]);
         alert("Itinerary deleted!");
       }
     }
@@ -46,9 +50,12 @@ const ItineraryMenu = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-wellness-forest">My Itinerary</h2>
+          {hasItinerary && <p className="text-sm">Add your itinerary through <span onClick={()=>navigate("/retreats")} className="text-sky-600 hover:text-sky-300 underline underline-offset-2">Retreat</span> Page</p>}
         </div>
-        {/* {!hasItinerary && (
-          <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-10 px-4 py-2 bg-wellness-sage hover:bg-wellness-forest text-black">
+        {!hasItinerary ? (
+          <button
+            onClick={() => setOpenModal(true)}
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-10 px-4 py-2 text-black">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -56,48 +63,73 @@ const ItineraryMenu = () => {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="lucide lucide-plus h-4 w-4 mr-2">
               <path d="M5 12h14"></path>
               <path d="M12 5v14"></path>
             </svg>
             Add Itinerary
           </button>
-        )} */}
+        ) : (
+          <button
+            onClick={() => handleDelete()}
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-10 px-4 py-2 bg-wellness-sage hover:bg-wellness-forest text-red-700">
+            <svg
+              className="lucide lucide-plus h-4 w-4 mr-2"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24">
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
+              />
+            </svg>
+            Delete All Itinerary
+          </button>
+        )}
+        <MakeItineraryMenu openModal={openModal} setOpenModal={setOpenModal} setHasItinerary={setHasItinerary} checkUserItinerary={checkUserItinerary}/>
       </div>
       <div className="space-y-6">
-        <Accordion>
-          {itineraryItem.map((item, index) => {
-            const isFilled = item.retreat_id !== null && item.retreat_id !== "";
-            return (
-              <AccordionPanel key={item.id}>
-                <AccordionTitle className="text-black">
-                  {`Day ${index + 1} - ${formatted(item.planned_date)}${isFilled && item.retreat_name ? ` (${item.retreat_name})` : ""}`}
-                </AccordionTitle>
-                <AccordionContent>
-                  {item.activities !== null ? (
-                    item.activities.map((activity) => (
-                      <div key={activity.id}>
-                        <ActivityItem
-                          activity={{
-                            activity_time: activity.time,
-                            activity_name: activity.title,
-                            activity_desc: activity.description,
-                            activity_location: activity.location,
-                          }}
-                        />
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-black">Theres nothing here :|</p>
-                  )}
-                </AccordionContent>
-              </AccordionPanel>
-            );
-          })}
-        </Accordion>
+        {hasItinerary && (
+          <Accordion>
+            {itineraryItem.map((item, index) => {
+              const isFilled = item.retreat_id !== null && item.retreat_id !== "";
+              return (
+                <AccordionPanel key={item.id}>
+                  <AccordionTitle className="text-black">
+                    {`Day ${index + 1} - ${formatted(item.planned_date)}${isFilled && item.retreat_name ? ` (${item.retreat_name})` : ""}`}
+                  </AccordionTitle>
+                  <AccordionContent>
+                    {item.activities !== null ? (
+                      item.activities.map((activity) => (
+                        <div key={activity.id}>
+                          <ActivityItem
+                            activity={{
+                              activity_time: activity.time,
+                              activity_name: activity.title,
+                              activity_desc: activity.description,
+                              activity_location: activity.location,
+                            }}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-black">Theres nothing here :|</p>
+                    )}
+                  </AccordionContent>
+                </AccordionPanel>
+              );
+            })}
+          </Accordion>
+        )}
       </div>
     </div>
   );

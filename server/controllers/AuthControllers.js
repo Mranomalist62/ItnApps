@@ -155,6 +155,18 @@ const UserController = {
       res.status(500).json({ message: "Server error" });
     }
   },
+
+  total: async (req, res)=>{
+    try {
+      const totalUsers = await prisma.user.count();
+      const totalRetreats = await prisma.retreat.count();
+
+      res.json({ totalUsers, totalRetreats });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Failed to fetch totals' });
+    }
+  }
 };
 
 module.exports = UserController;

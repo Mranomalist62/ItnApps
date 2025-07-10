@@ -1,9 +1,9 @@
 export const handleCreateItinerary = async (dateRange) => {
   const adjustedStart = new Date(dateRange.startDate);
-  adjustedStart.setDate(adjustedStart.getDate() + 1);
+  adjustedStart.setHours(adjustedStart.getHours() + 8);
 
   const adjustedEnd = new Date(dateRange.endDate);
-  adjustedEnd.setDate(adjustedEnd.getDate() + 1);
+  adjustedEnd.setHours(adjustedEnd.getHours() + 8);
   try {
     const res = await fetch("http://localhost:5000/api/itinerary/create", {
       method: "POST",

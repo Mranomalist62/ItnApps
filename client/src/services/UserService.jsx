@@ -28,3 +28,15 @@ export const handleUpdateProfile = async (e, form) => {
     alert("❌ Server error during update");
   }
 };
+
+export const handleDashboardStats = async () => {
+  try {
+    const res = await fetch('http://localhost:5000/api/users/totals');
+    if (!res.ok) throw new Error('Failed to fetch');
+    return await res.json(); 
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    return { totalUsers: 0, totalRetreats: 0 };
+  }
+};
+

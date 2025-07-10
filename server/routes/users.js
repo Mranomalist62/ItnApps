@@ -14,6 +14,7 @@ router.post('/register', AuthController.register);
 router.post('/login', AuthController.login);
 router.post('/logout', AuthController.logout);
 router.get('/validate', AuthController.validate);
+router.get('/totals', AuthController.total);
 
 // All User dashboard action
 // Update user info
